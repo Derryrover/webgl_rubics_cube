@@ -1,0 +1,1 @@
+elm-make RubicsCube.elm --output=rubics_cube.js

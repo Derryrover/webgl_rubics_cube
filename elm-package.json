@@ -18,17 +18,23 @@
         "BlockToVertex",
         "Rib",
         "Arithmetic",
-        "CommandToMessage"
+        "CommandToMessage",
+        "SpinCubeGl",
+        "MainUtils",
+        "CalculateViewFromDrag",
+        "RotationDirectionFromDrag",
+        "ColorPicker"
     ],
     "exposed-modules": [],
     "dependencies": {
         "elm-community/linear-algebra": "1.0.0 <= v < 2.0.0",
         "elm-community/list-extra": "5.0.0 <= v < 6.0.0",
-        "elm-community/webgl": "1.0.2 <= v < 2.0.0",
+        "elm-community/webgl": "2.0.3 <= v < 3.0.0",
         "elm-lang/animation-frame": "1.0.1 <= v < 2.0.0",
         "elm-lang/core": "5.0.0 <= v < 6.0.0",
         "elm-lang/html": "2.0.0 <= v < 3.0.0",
         "elm-lang/http": "1.0.0 <= v < 2.0.0",
+        "elm-lang/mouse": "1.0.1 <= v < 2.0.0",
         "elm-lang/svg": "2.0.0 <= v < 3.0.0",
         "elm-lang/websocket": "1.0.2 <= v < 2.0.0"
     },

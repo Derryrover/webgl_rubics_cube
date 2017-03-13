@@ -1,53 +1,22 @@
-module BlockBuilder exposing (allBlocks)
+module BlockBuilder exposing (coordinates,allBlocks)
 
 import List
 import List.Extra exposing(lift3)
-import Maybe
-import Color
 
 import Rib exposing(size, range)
-import BlockModel exposing (Row, BlockRow, Block)
-
-coordinates: List (Row, Row, Row)
-coordinates =  lift3 (\x y z -> (x,y,z)) range range range
-
-getXRow: Row -> BlockRow
-getXRow row =
-  if row == 1 then
-    {row = row, color = Just Color.red}
-  else if row == size then
-    {row = row, color = Just Color.green}
-  else
-    {row = row, color = Nothing }
-
-getYRow: Row -> BlockRow
-getYRow row =
-  if row == 1 then
-    {row = row, color = Just Color.blue}
-  else if row == size then
-    {row = row, color = Just Color.orange}
-  else
-    {row = row, color = Nothing }
-
-getZRow: Row -> BlockRow
-getZRow row =
-  if row == 1 then
-    {row = row, color = Just Color.yellow}
-  else if row == size then
-    {row = row, color = Just Color.purple}
-  else
-    {row = row, color = Nothing }
-
-mapSingleBlock: (Row, Row, Row) ->  Block
-mapSingleBlock tuple =
-  let
-    (x,y,z) = tuple
-  in
-    { x = getXRow x
-    , y = getYRow y
-    , z = getZRow z }
+import BlockModel
+import BlockModelDirection
 
 
-allBlocks: List Block
+coordinates: List BlockModel.XYZRow
+coordinates =  lift3 (\x y z -> {x=x,y=y,z=z}) range range range
+
+
+mapSingleBlock: BlockModel.XYZRow ->  BlockModel.XYZColorRow
+mapSingleBlock xyz =
+    { rows = xyz
+    , colors = BlockModelDirection.xyzRowToXYZColor xyz}
+
+allBlocks: List BlockModel.XYZColorRow
 allBlocks = List.map mapSingleBlock coordinates
 

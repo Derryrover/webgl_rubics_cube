@@ -1,12 +1,36 @@
-module CubeFace exposing (face)
+module CubeFace exposing (face,toFace3Vertex)
 
 import Math.Vector3 exposing (Vec3, vec3)
 import Vertex exposing (Vertex)
 import Color exposing (Color, toRgb)
 
+import List
 
-face : Color -> Vec3 -> Vec3 -> Vec3 -> Vec3 -> List ( Vertex, Vertex, Vertex )
-face rawColor a b c d =
+import BlockToVertexModel
+
+
+face : Color -> BlockToVertexModel.Face -> BlockToVertexModel.FaceVertex
+face rawColor (one,two,three,four) =
+  let
+    rgb = toRgb rawColor
+    r = (toFloat rgb.red   / 255)
+    g = (toFloat rgb.green / 255)
+    b = (toFloat rgb.blue  / 255)
+    colorVec3 = vec3 r g b
+  in
+    (Vertex colorVec3 one, Vertex colorVec3 two, Vertex colorVec3 three, Vertex colorVec3 four)
+
+
+toFace3Vertex: BlockToVertexModel.FaceVertex -> List BlockToVertexModel.Face3Vertex
+toFace3Vertex (a,b,c,d) =
+  [ (a,b,c)
+  , (c,d,a) ]
+
+
+------------------------------------------------------------------
+
+faceOld : Color -> Vec3 -> Vec3 -> Vec3 -> Vec3 -> List ( Vertex, Vertex, Vertex )
+faceOld rawColor a b c d =
     let
         color =
             let

@@ -1,0 +1,65 @@
+<div id="display_color" style="display:none;width:50px;height:50px;background-color:green"></div>
+<div id="rubics_cube"></div>
+<script src="rubics_cube.js"></script>
+<script>
+    var node = document.getElementById('rubics_cube');
+    var app = Elm.RubicsCube.embed(node);
+    // Note: if your Elm module is named "MyThing.Root" you
+    // would call "Elm.MyThing.Root.embed(node)" instead.
+	
+	//var app = Elm.RubicsCube.fullscreen();
+	
+	function getColorFromCanvas(xyString) {  // "x,y"
+		// parse x and y from string
+		var xy = (xyString + '').split(','); // [x,y]
+		var x = parseInt(xy[0]) || 1;
+		var y = parseInt(xy[1]) || 1;
+		
+		// canvas that user sees
+		var shownCanvas = document.getElementById('js_cubicle_canvas');
+		var ctx = shownCanvas.getContext('webgl')
+		var rect = shownCanvas.getBoundingClientRect();
+		var width = shownCanvas.width; // 800
+		var height = shownCanvas.height; // 800
+		
+		// remove padding top and left
+		var realX = x - rect.left;
+		var realY = y - rect.top;
+		// correct for cropped dimensions
+		realX = parseInt(realX*width/rect.width);
+		realY = parseInt(realY*height/rect.height);
+		// invert y
+		realY = 800 - realY;
+		console.log(realX, realY);
+		
+		/*
+		var newCvs = shownCanvas.cloneNode(false);
+		shownCanvas.parentNode.replaceChild(newCvs, shownCanvas);
+		shownCanvas = newCvs;
+		var ctx = shownCanvas.getContext("2d");
+		ctx.fillStyle="#FF0000";
+		ctx.beginPath();
+		ctx.arc(realX, realY, 1, 0, 2 * Math.PI);
+		ctx.fill();
+		//*/
+		
+	    var canvas = document.getElementById('js_color_picker');		
+		var context = canvas.getContext('webgl')//('2d');
+		var pixels = new Uint8Array(4); // 4 because of rgba
+		context.readPixels(realX,realY,1,1, context.RGBA, context.UNSIGNED_BYTE, pixels);
+		console.log(pixels)
+		
+		var color = "RGBA " + pixels[0]+ " " + pixels[1]+ " " + pixels[2] + " 1"
+		console.log(color);
+		
+		
+		var div_display_color = document.getElementById('display_color');
+		div_display_color.style.backgroundColor = "rgb("+pixels[0]+","+pixels[1]+","+pixels[2]+")";//"rgb(255, 0, 0)";
+		
+		// "RGBA 115 210 22 1" : String
+        app.ports.listenForColors.send(color);
+	}
+	
+    app.ports.sendCoordinates.subscribe(getColorFromCanvas);
+
+</script>
