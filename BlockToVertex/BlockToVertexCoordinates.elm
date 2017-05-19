@@ -3,7 +3,7 @@ module BlockToVertexCoordinates exposing(..)
 import BlockToVertexModel exposing(Face, ColorFace, ColorBlackFaces, AllSideFaces, mapFace, mapColorFace, mapColorBlackFaces, mapAllSideFaces)
 import Math.Vector3 exposing (Vec3, vec3)
 
-colorFaceSize = 0.75
+colorFaceSize = 0.85
 
 -- See RubicsVertexSide PNG image in Root folder for coordinates explained
 preProtoColorFace: ColorFace

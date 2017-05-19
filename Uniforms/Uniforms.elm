@@ -4,7 +4,7 @@ import Math.Vector3 exposing (Vec3, vec3)
 import Math.Matrix4 exposing (Mat4, mul, makeRotate, makePerspective, makeLookAt, transform)
 
 import BlockModel
-
+--
 
 --import WebGL exposing (..)
 perspective = makePerspective 45 1 0.01 100
@@ -28,6 +28,14 @@ uniforms matrix =
     { rotation = matrix
     , perspective = perspective
     , camera = camera
+    , shade = 0.75
+    }
+
+uniformsNoShade : Mat4 -> { rotation : Mat4, perspective : Mat4, camera : Mat4, shade : Float }
+uniformsNoShade matrix =
+    { rotation = matrix
+    , perspective = perspective
+    , camera = camera
     , shade = 1--0.8
     }
 {-
@@ -44,7 +52,7 @@ uniformsRow matrix spin axis turn =
     { rotation = mul (matrix) (makeRotate spin (calculateRowRotationVec axis turn))
     , perspective = perspective
     , camera = camera
-    , shade = 1--0.8
+    , shade = 0.75
     }
 {-
 multiplyRotationXY angleX angleY =

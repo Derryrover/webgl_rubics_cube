@@ -1,17 +1,8 @@
-Update
-elm-stuff\packages\elm-community\webgl\2.0.3\src\Native\WebGL.js
-
-line 576
-preserveDrawingBuffer: true
-
-because next logic is needed for readPixels
-canvas.getContext("experimental-webgl", {preserveDrawingBuffer: true});
-
-
-commented out lines that contain: cache.buffers[entity.buffer.guid
+In the resulting file called: rubics_cube.js
+comment out lines that contain: cache.buffers[entity.buffer.guid
 lines:
-449
-453
+7785
+7789
 
 var buffer; //= model.cache.buffers[entity.buffer.guid];
 
@@ -27,4 +18,4 @@ so there will be infinitively alot cached,
 causing a memory leak
 
 https://groups.google.com/forum/#!topic/elm-discuss/NzUX9AEulxg
-//*/
+

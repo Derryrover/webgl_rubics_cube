@@ -145,11 +145,11 @@ view: Model -> Html.Html Msg
 view model =
   --Html.div [onMouseDown, style ["height" => "100%"] ]
   Html.div [ onMouseDown, style ["height" => "100%"] ]
-    [ Html.div [style ["height" => "100%"]]
+    [ Html.div [style ["height" => "100%", "display"=>"flex", "justify-content"=> "center", "align-items"=>"center"]]
           --[ WebGL.toHtml [width 800, height 800] (List.concat[(sceneSpinRow model), (sceneRest model)]) ]
           --[ WebGL.toHtml [onMouseDown, width 800, height 800, style ["height" => "100%"]] (List.concat[(sceneSpinRow model), (sceneRest model)]) ]
           --[ WebGL.toHtml [id "js_cubicle_canvas", onMouseDown,width 800, height 800, style ["height" => "100%"]] (List.concat[(sceneSpinRow model), (sceneRest model)])
-          [ WebGL.toHtml [id "js_cubicle_canvas",width 800, height 800, style ["height" => "100%", "display"=>"block","margin" => "auto"]] (List.concat[(sceneSpinRow model), (sceneRest model)])
+          [ WebGL.toHtml [id "js_cubicle_canvas",width 800, height 800, style ["height" => "70%", "display"=>"block","margin" => "auto"]] (List.concat[(sceneSpinRow model), (sceneRest model)])
           , WebGL.toHtmlWith [ WebGL.alpha False, WebGL.depth 1 ] [width 800, height 800, style ["height" => "100%", "display" => "none"], id "js_color_picker"] (scenePicker model) ]
           --, WebGL.toHtml [width 800, height 800, style ["height" => "100%"], id "js_color_picker"] (scenePicker model) ]
      {-

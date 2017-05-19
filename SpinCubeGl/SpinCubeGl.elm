@@ -3,7 +3,7 @@ module SpinCubeGl exposing(..)
 import WebGL exposing (Entity,entity)
 import VertexShader exposing(vertexShader)
 import FragmentShader exposing(fragmentShader)
-import Uniforms exposing(uniforms, uniformsRow)
+import Uniforms exposing(uniforms, uniformsRow, uniformsNoShade)
 
 import BlockToVertex
 import BlockTransformations
@@ -41,7 +41,7 @@ scenePicker model =
     vertexes = List.concat (List.map BlockToVertex.singleBlockToVertexList blocks)
     triangles = WebGL.triangles vertexes
   in
-    [ entity vertexShader fragmentShader triangles (uniforms model.rotationMatrix ) ]
+    [ entity vertexShader fragmentShader triangles (uniformsNoShade model.rotationMatrix ) ]
 
 
 

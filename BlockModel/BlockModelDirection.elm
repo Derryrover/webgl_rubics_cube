@@ -20,7 +20,7 @@ directionToInitialColor dir =
     BlockModel.Front ->
       Color.yellow
     BlockModel.Back ->
-      Color.purple
+      Color.white
 
 getDirectionXAxis: BlockModel.Row -> Maybe BlockModel.Direction
 getDirectionXAxis row =

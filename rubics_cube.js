@@ -7355,7 +7355,28 @@ var _elm_community$list_extra$List_Extra$init = function () {
 var _elm_community$list_extra$List_Extra$last = _elm_community$list_extra$List_Extra$foldl1(
 	_elm_lang$core$Basics$flip(_elm_lang$core$Basics$always));
 
-// added preserveDrawingBuffer: true at line 574 By Tom de Boer
+// added preserveDrawingBuffer: true at line 574 By Tom de Boer to read pixels
+/*
+commented out lines that contain: cache.buffers[entity.buffer.guid
+lines:
+449
+453
+
+var buffer; //= model.cache.buffers[entity.buffer.guid];
+
+      if (!buffer) {
+        buffer = doBindSetup(gl, entityType, entity.buffer);
+        //model.cache.buffers[entity.buffer.guid] = buffer;
+      }
+
+
+these lines cached the triangle buffers
+anyway these buffers are going to be recreated each time
+so there will be infinitively alot cached,
+causing a memory leak
+
+https://groups.google.com/forum/#!topic/elm-discuss/NzUX9AEulxg
+//*/
 
 // eslint-disable-next-line no-unused-vars, camelcase
 var _elm_community$webgl$Native_WebGL = function () {
@@ -7782,11 +7803,11 @@ var _elm_community$webgl$Native_WebGL = function () {
       setUniforms(setters, entity.uniforms);
 
       var entityType = getRenderInfo(gl, entity.buffer.ctor);
-      var buffer = model.cache.buffers[entity.buffer.guid];
+      var buffer; // = model.cache.buffers[entity.buffer.guid];
 
       if (!buffer) {
         buffer = doBindSetup(gl, entityType, entity.buffer);
-        model.cache.buffers[entity.buffer.guid] = buffer;
+        // model.cache.buffers[entity.buffer.guid] = buffer;
       }
 
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer.indexBuffer);
@@ -12940,7 +12961,7 @@ var _elm_lang$elm_architecture_tutorial$BlockModelDirection$directionToInitialCo
 		case 'Front':
 			return _elm_lang$core$Color$yellow;
 		default:
-			return _elm_lang$core$Color$purple;
+			return _elm_lang$core$Color$white;
 	}
 };
 var _elm_lang$elm_architecture_tutorial$BlockModelDirection$xyzRowToXYZColor = function (xyz) {
@@ -13104,7 +13125,7 @@ var _elm_lang$elm_architecture_tutorial$BlockToVertexCoordinates$preProtoBlackFa
 	_2: A3(_elm_community$linear_algebra$Math_Vector3$vec3, 1, 1, 1),
 	_3: A3(_elm_community$linear_algebra$Math_Vector3$vec3, -1, 1, 1)
 };
-var _elm_lang$elm_architecture_tutorial$BlockToVertexCoordinates$colorFaceSize = 0.75;
+var _elm_lang$elm_architecture_tutorial$BlockToVertexCoordinates$colorFaceSize = 0.85;
 var _elm_lang$elm_architecture_tutorial$BlockToVertexCoordinates$preProtoColorFace = function () {
 	var x = _elm_lang$elm_architecture_tutorial$BlockToVertexCoordinates$colorFaceSize;
 	return {
@@ -14704,6 +14725,9 @@ var _elm_lang$elm_architecture_tutorial$Uniforms$camera = A3(
 	A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 1, 0));
 var _elm_lang$elm_architecture_tutorial$Uniforms$perspective = A4(_elm_community$linear_algebra$Math_Matrix4$makePerspective, 45, 1, 1.0e-2, 100);
 var _elm_lang$elm_architecture_tutorial$Uniforms$uniforms = function (matrix) {
+	return {rotation: matrix, perspective: _elm_lang$elm_architecture_tutorial$Uniforms$perspective, camera: _elm_lang$elm_architecture_tutorial$Uniforms$camera, shade: 0.75};
+};
+var _elm_lang$elm_architecture_tutorial$Uniforms$uniformsNoShade = function (matrix) {
 	return {rotation: matrix, perspective: _elm_lang$elm_architecture_tutorial$Uniforms$perspective, camera: _elm_lang$elm_architecture_tutorial$Uniforms$camera, shade: 1};
 };
 var _elm_lang$elm_architecture_tutorial$Uniforms$uniformsRow = F4(
@@ -14718,7 +14742,7 @@ var _elm_lang$elm_architecture_tutorial$Uniforms$uniformsRow = F4(
 					A2(_elm_lang$elm_architecture_tutorial$Uniforms$calculateRowRotationVec, axis, turn))),
 			perspective: _elm_lang$elm_architecture_tutorial$Uniforms$perspective,
 			camera: _elm_lang$elm_architecture_tutorial$Uniforms$camera,
-			shade: 1
+			shade: 0.75
 		};
 	});
 
@@ -14734,7 +14758,7 @@ var _elm_lang$elm_architecture_tutorial$SpinCubeGl$scenePicker = function (model
 			_elm_lang$elm_architecture_tutorial$VertexShader$vertexShader,
 			_elm_lang$elm_architecture_tutorial$FragmentShader$fragmentShader,
 			triangles,
-			_elm_lang$elm_architecture_tutorial$Uniforms$uniforms(model.rotationMatrix)),
+			_elm_lang$elm_architecture_tutorial$Uniforms$uniformsNoShade(model.rotationMatrix)),
 		_1: {ctor: '[]'}
 	};
 };
@@ -14984,7 +15008,19 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$view = function (model) {
 						{
 							ctor: '::',
 							_0: A2(_elm_lang$elm_architecture_tutorial$RubicsCube_ops['=>'], 'height', '100%'),
-							_1: {ctor: '[]'}
+							_1: {
+								ctor: '::',
+								_0: A2(_elm_lang$elm_architecture_tutorial$RubicsCube_ops['=>'], 'display', 'flex'),
+								_1: {
+									ctor: '::',
+									_0: A2(_elm_lang$elm_architecture_tutorial$RubicsCube_ops['=>'], 'justify-content', 'center'),
+									_1: {
+										ctor: '::',
+										_0: A2(_elm_lang$elm_architecture_tutorial$RubicsCube_ops['=>'], 'align-items', 'center'),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
 						}),
 					_1: {ctor: '[]'}
 				},
@@ -15006,7 +15042,7 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$view = function (model) {
 										_0: _elm_lang$html$Html_Attributes$style(
 											{
 												ctor: '::',
-												_0: A2(_elm_lang$elm_architecture_tutorial$RubicsCube_ops['=>'], 'height', '100%'),
+												_0: A2(_elm_lang$elm_architecture_tutorial$RubicsCube_ops['=>'], 'height', '70%'),
 												_1: {
 													ctor: '::',
 													_0: A2(_elm_lang$elm_architecture_tutorial$RubicsCube_ops['=>'], 'display', 'block'),
