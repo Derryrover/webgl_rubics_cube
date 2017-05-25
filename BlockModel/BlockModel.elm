@@ -8,6 +8,7 @@ module BlockModel exposing
   , mapXYZ
   , XYZRow
   , XYZColor
+  , XYZDirection
   , XYZColorRow
   , Move
   , Face )
@@ -34,10 +35,21 @@ mapXYZ f {x,y,z} =
 
 type alias XYZRow = XYZ Row
 type alias XYZColor = XYZ (Maybe Color)
+-- added for shader
+type alias XYZDirection = XYZ (Maybe Direction)
 
+{--}
 type alias XYZColorRow =
   { rows: XYZRow
   , colors: XYZColor }
+{--}
+
+{-
+type alias XYZColorRow =
+  { rows: XYZRow
+  , colors: XYZColor
+  , directions: XYZDirection }
+-}
 
 type alias Move =
   { row: Row

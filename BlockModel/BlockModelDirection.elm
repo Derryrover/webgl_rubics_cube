@@ -1,4 +1,4 @@
-module BlockModelDirection exposing(directionToInitialColor, xyzRowToXYZColor, getDirectionXAxis, getDirectionYAxis, getDirectionZAxis)
+module BlockModelDirection exposing(directionToInitialColor, xyzRowToXYZColor, getDirectionXAxis, getDirectionYAxis, getDirectionZAxis,xyzRowToXYZDirection)
 
 import BlockModel
 import Rib exposing(size)
@@ -62,3 +62,18 @@ xyzRowToXYZColor xyz =
     { x = xColor
     , y = yColor
     , z = zColor }
+
+-- added for shaders
+xyzRowToXYZDirection: BlockModel.XYZRow ->  BlockModel.XYZDirection
+xyzRowToXYZDirection xyz =
+  let
+    xDirection = getDirectionXAxis xyz.x
+    yDirection = getDirectionYAxis xyz.y
+    zDirection = getDirectionZAxis xyz.z
+  in
+    { x = xDirection
+    , y = yDirection
+    , z = zDirection }
+
+
+

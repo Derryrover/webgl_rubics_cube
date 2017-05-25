@@ -68,7 +68,7 @@ xyzRowColorToListFaces xyz =
 
 toVertexListPlusColors: BlockToVertexModel.XYZColorsListBlack -> BlockToVertexModel.VertexListPlusColors
 toVertexListPlusColors colorList =
-  { colorList | black= List.map (CubeFace.face black) colorList.black}
+  { colorList | black= List.map (\color->CubeFace.face black color (vec3 1 0 0 )) colorList.black} --(vec3 1 0 0) is dummy normal that will not be used. black is filtered out in fragment shader
 
 toVertexListPlusFace3Colors: BlockToVertexModel.VertexListPlusColors -> BlockToVertexModel.VertexListPlusFace3Colors
 toVertexListPlusFace3Colors colorList =
@@ -106,9 +106,37 @@ singleBlockToVertexList {rows,colors} =
         []
       Just listPlus3Colors ->
         let
-          xFace = Maybe.andThen (\face-> Maybe.map (\color->CubeFace.face color face) colors.x) listPlus3Colors.x
-          yFace = Maybe.andThen (\face-> Maybe.map (\color->CubeFace.face color face) colors.y) listPlus3Colors.y
-          zFace = Maybe.andThen (\face-> Maybe.map (\color->CubeFace.face color face) colors.z) listPlus3Colors.z
+          xFace =
+            case (BlockModelDirection.getDirectionXAxis rows.x) of
+              Nothing ->
+                Nothing
+              Just BlockModel.Right ->
+                Maybe.andThen (\face-> Maybe.map (\color->CubeFace.face color face (vec3 -1 0 0)) colors.x) listPlus3Colors.x
+              Just BlockModel.Left ->
+                Maybe.andThen (\face-> Maybe.map (\color->CubeFace.face color face (vec3 1 0 0)) colors.x) listPlus3Colors.x
+              Just _ ->
+                Nothing
+
+          yFace =
+            case (BlockModelDirection.getDirectionYAxis rows.y) of
+              Nothing ->
+                Nothing
+              Just BlockModel.Top ->
+                Maybe.andThen (\face-> Maybe.map (\color->CubeFace.face color face (vec3 0 -1 0)) colors.y) listPlus3Colors.y
+              Just BlockModel.Down ->
+                Maybe.andThen (\face-> Maybe.map (\color->CubeFace.face color face (vec3 0 1 0)) colors.y) listPlus3Colors.y
+              Just _ ->
+                Nothing
+          zFace =
+            case (BlockModelDirection.getDirectionZAxis rows.z) of
+              Nothing ->
+                Nothing
+              Just BlockModel.Back ->
+                Maybe.andThen (\face-> Maybe.map (\color->CubeFace.face color face (vec3 0 0 -1)) colors.z) listPlus3Colors.z
+              Just BlockModel.Front ->
+                Maybe.andThen (\face-> Maybe.map (\color->CubeFace.face color face (vec3 0 0 1)) colors.z) listPlus3Colors.z
+              Just _ ->
+                Nothing
           xMList = Maybe.map (CubeFace.toFace3Vertex) xFace
           yMList = Maybe.map (CubeFace.toFace3Vertex) yFace
           zMList = Maybe.map (CubeFace.toFace3Vertex) zFace

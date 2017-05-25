@@ -42,16 +42,16 @@ cube =
         WebGL.Triangle
             << List.concat
         <|
-            [ face green rft rfb rbb rbt
+            [ face green rft rfb rbb rbt (vec3 1 0 0)
               -- right
-            , face blue rft rfb lfb lft
+            , face blue rft rfb lfb lft (vec3 0 1 0)
               -- front
-            , face yellow rft lft lbt rbt
+            , face yellow rft lft lbt rbt (vec3 0 0 -1)
               -- top
-            , face red rfb lfb lbb rbb
+            , face red rfb lfb lbb rbb (vec3 0 0 1)
               -- bottom
-            , face purple lft lfb lbb lbt
+            , face purple lft lfb lbb lbt (vec3 -1 0 0)
               -- left
-            , face orange rbt rbb lbb lbt
+            , face orange rbt rbb lbb lbt (vec3 0 -1 0)
               -- back
             ]

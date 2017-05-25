@@ -15,7 +15,8 @@ coordinates =  lift3 (\x y z -> {x=x,y=y,z=z}) range range range
 mapSingleBlock: BlockModel.XYZRow ->  BlockModel.XYZColorRow
 mapSingleBlock xyz =
     { rows = xyz
-    , colors = BlockModelDirection.xyzRowToXYZColor xyz}
+    , colors = BlockModelDirection.xyzRowToXYZColor xyz }
+    --, directions = BlockModelDirection.xyzRowToXYZDirection xyz }
 
 allBlocks: List BlockModel.XYZColorRow
 allBlocks = List.map mapSingleBlock coordinates

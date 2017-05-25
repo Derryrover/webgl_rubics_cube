@@ -5101,6 +5101,250 @@ var _elm_community$linear_algebra$Math_Matrix4$identity = _elm_community$linear_
 var _elm_community$linear_algebra$Math_Matrix4$transform = _elm_community$linear_algebra$Native_MJS.v3mul4x4;
 var _elm_community$linear_algebra$Math_Matrix4$Mat4 = {ctor: 'Mat4'};
 
+
+/*
+ * Copyright (c) 2010 Mozilla Corporation
+ * Copyright (c) 2010 Vladimir Vukicevic
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+/*
+ * File: mjs
+ *
+ * Vector and Matrix math utilities for JavaScript, optimized for WebGL.
+ * Edited to work with the Elm Programming Language
+ */
+
+var _elm_community$linear_algebra$Native_Math_Vector4 = function() {
+
+    var MJS_FLOAT_ARRAY_TYPE = Float32Array;
+
+    var V4 = { };
+
+    if (MJS_FLOAT_ARRAY_TYPE == Array) {
+        V4.$ = function V4_$(x, y, z, w) {
+            return [x, y, z, w];
+        };
+    } else {
+        V4.$ = function V4_$(x, y, z, w) {
+            return new MJS_FLOAT_ARRAY_TYPE([x, y, z, w]);
+        };
+    }
+
+    V4.getX = function V4_getX(a) {
+        return a[0];
+    }
+    V4.getY = function V4_getY(a) {
+        return a[1];
+    }
+    V4.getZ = function V4_getZ(a) {
+        return a[2];
+    }
+    V4.getW = function V4_getW(a) {
+        return a[3];
+    }
+    V4.setX = function V4_setX(x, a) {
+        return new MJS_FLOAT_ARRAY_TYPE(x, a[1], a[2], a[3]);
+    }
+    V4.setY = function V4_setY(y, a) {
+        return new MJS_FLOAT_ARRAY_TYPE(a[0], y, a[2], a[3]);
+    }
+    V4.setZ = function V4_setZ(z, a) {
+        return new MJS_FLOAT_ARRAY_TYPE(a[0], a[1], z, a[3]);
+    }
+    V4.setW = function V4_setW(w, a) {
+        return new MJS_FLOAT_ARRAY_TYPE(a[0], a[1], a[2], w);
+    }
+
+    V4.toTuple = function V4_toTuple(a) {
+        return {
+            ctor:"_Tuple4",
+            _0:a[0],
+            _1:a[1],
+            _2:a[2],
+            _3:a[3]
+        };
+    };
+    V4.fromTuple = function V4_fromTuple(t) {
+        return new MJS_FLOAT_ARRAY_TYPE([t._0, t._1, t._2, t._3]);
+    };
+
+    V4.toRecord = function V4_toRecord(a) {
+        return {
+            _:{},
+            x:a[0],
+            y:a[1],
+            z:a[2],
+            w:a[3]
+        };
+    };
+    V4.fromRecord = function V4_fromRecord(r) {
+        return new MJS_FLOAT_ARRAY_TYPE([r.x, r.y, r.z, r.w]);
+    };
+
+    V4.add = function V4_add(a, b) {
+        var r = new MJS_FLOAT_ARRAY_TYPE(4);
+        r[0] = a[0] + b[0];
+        r[1] = a[1] + b[1];
+        r[2] = a[2] + b[2];
+        r[3] = a[3] + b[3];
+        return r;
+    };
+
+    V4.sub = function V4_sub(a, b) {
+        var r = new MJS_FLOAT_ARRAY_TYPE(4);
+        r[0] = a[0] - b[0];
+        r[1] = a[1] - b[1];
+        r[2] = a[2] - b[2];
+        r[3] = a[3] - b[3];
+        return r;
+    };
+
+    V4.neg = function V4_neg(a) {
+        var r = new MJS_FLOAT_ARRAY_TYPE(4);
+        r[0] = - a[0];
+        r[1] = - a[1];
+        r[2] = - a[2];
+        r[3] = - a[3];
+        return r;
+    };
+
+    V4.direction = function V4_direction(a, b) {
+        var r = new MJS_FLOAT_ARRAY_TYPE(4);
+        r[0] = a[0] - b[0];
+        r[1] = a[1] - b[1];
+        r[2] = a[2] - b[2];
+        r[3] = a[3] - b[3];
+        var im = 1.0 / V4.length(r);
+        r[0] = r[0] * im;
+        r[1] = r[1] * im;
+        r[2] = r[2] * im;
+        r[3] = r[3] * im;
+        return r;
+    };
+
+    V4.length = function V4_length(a) {
+        return Math.sqrt(a[0]*a[0] + a[1]*a[1] + a[2]*a[2] + a[3]*a[3]);
+    };
+
+    V4.lengthSquared = function V4_lengthSquared(a) {
+        return a[0]*a[0] + a[1]*a[1] + a[2]*a[2] + a[3]*a[3];
+    };
+
+    V4.distance = function V4_distance(a, b) {
+        var dx = a[0] - b[0];
+        var dy = a[1] - b[1];
+        var dz = a[2] - b[2];
+        var dw = a[3] - b[3];
+        return Math.sqrt(dx * dx + dy * dy + dz * dz + dw * dw);
+    };
+
+    V4.distanceSquared = function V4_distanceSquared(a, b) {
+        var dx = a[0] - b[0];
+        var dy = a[1] - b[1];
+        var dz = a[2] - b[2];
+        var dw = a[3] - b[3];
+        return dx * dx + dy * dy + dz * dz + dw * dw;
+    };
+
+    V4.normalize = function V4_normalize(a) {
+        var r = new MJS_FLOAT_ARRAY_TYPE(4);
+        var im = 1.0 / V4.length(a);
+        r[0] = a[0] * im;
+        r[1] = a[1] * im;
+        r[2] = a[2] * im;
+        r[3] = a[3] * im;
+        return r;
+    };
+
+    V4.scale = function V4_scale(k, a) {
+        var r = new MJS_FLOAT_ARRAY_TYPE(4);
+        r[0] = a[0] * k;
+        r[1] = a[1] * k;
+        r[2] = a[2] * k;
+        r[3] = a[3] * k;
+        return r;
+    };
+
+    V4.dot = function V4_dot(a, b) {
+        return a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3];
+    };
+
+    return {
+        vec4: F4(V4.$),
+        getX: V4.getX,
+        getY: V4.getY,
+        getZ: V4.getZ,
+        getW: V4.getW,
+        setX: F2(V4.setX),
+        setY: F2(V4.setY),
+        setZ: F2(V4.setZ),
+        setW: F2(V4.setW),
+        toTuple: V4.toTuple,
+        toRecord: V4.toRecord,
+        fromTuple: V4.fromTuple,
+        fromRecord: V4.fromRecord,
+        add: F2(V4.add),
+        sub: F2(V4.sub),
+        neg: V4.neg,
+        direction: F2(V4.direction),
+        length: V4.length,
+        lengthSquared: V4.lengthSquared,
+        distance: F2(V4.distance),
+        distanceSquared: F2(V4.distanceSquared),
+        normalize: V4.normalize,
+        scale: F2(V4.scale),
+        dot: F2(V4.dot)
+    };
+
+}();
+
+var _elm_community$linear_algebra$Math_Vector4$dot = _elm_community$linear_algebra$Native_Math_Vector4.dot;
+var _elm_community$linear_algebra$Math_Vector4$scale = _elm_community$linear_algebra$Native_Math_Vector4.scale;
+var _elm_community$linear_algebra$Math_Vector4$normalize = _elm_community$linear_algebra$Native_Math_Vector4.normalize;
+var _elm_community$linear_algebra$Math_Vector4$distanceSquared = _elm_community$linear_algebra$Native_Math_Vector4.distanceSquared;
+var _elm_community$linear_algebra$Math_Vector4$distance = _elm_community$linear_algebra$Native_Math_Vector4.distance;
+var _elm_community$linear_algebra$Math_Vector4$lengthSquared = _elm_community$linear_algebra$Native_Math_Vector4.lengthSquared;
+var _elm_community$linear_algebra$Math_Vector4$length = _elm_community$linear_algebra$Native_Math_Vector4.length;
+var _elm_community$linear_algebra$Math_Vector4$direction = _elm_community$linear_algebra$Native_Math_Vector4.direction;
+var _elm_community$linear_algebra$Math_Vector4$negate = _elm_community$linear_algebra$Native_Math_Vector4.neg;
+var _elm_community$linear_algebra$Math_Vector4$sub = _elm_community$linear_algebra$Native_Math_Vector4.sub;
+var _elm_community$linear_algebra$Math_Vector4$add = _elm_community$linear_algebra$Native_Math_Vector4.add;
+var _elm_community$linear_algebra$Math_Vector4$fromRecord = _elm_community$linear_algebra$Native_Math_Vector4.fromRecord;
+var _elm_community$linear_algebra$Math_Vector4$fromTuple = _elm_community$linear_algebra$Native_Math_Vector4.fromTuple;
+var _elm_community$linear_algebra$Math_Vector4$toRecord = _elm_community$linear_algebra$Native_Math_Vector4.toRecord;
+var _elm_community$linear_algebra$Math_Vector4$toTuple = _elm_community$linear_algebra$Native_Math_Vector4.toTuple;
+var _elm_community$linear_algebra$Math_Vector4$setW = _elm_community$linear_algebra$Native_Math_Vector4.setW;
+var _elm_community$linear_algebra$Math_Vector4$setZ = _elm_community$linear_algebra$Native_Math_Vector4.setZ;
+var _elm_community$linear_algebra$Math_Vector4$setY = _elm_community$linear_algebra$Native_Math_Vector4.setY;
+var _elm_community$linear_algebra$Math_Vector4$setX = _elm_community$linear_algebra$Native_Math_Vector4.setX;
+var _elm_community$linear_algebra$Math_Vector4$getW = _elm_community$linear_algebra$Native_Math_Vector4.getW;
+var _elm_community$linear_algebra$Math_Vector4$getZ = _elm_community$linear_algebra$Native_Math_Vector4.getZ;
+var _elm_community$linear_algebra$Math_Vector4$getY = _elm_community$linear_algebra$Native_Math_Vector4.getY;
+var _elm_community$linear_algebra$Math_Vector4$getX = _elm_community$linear_algebra$Native_Math_Vector4.getX;
+var _elm_community$linear_algebra$Math_Vector4$vec4 = _elm_community$linear_algebra$Native_Math_Vector4.vec4;
+var _elm_community$linear_algebra$Math_Vector4$Vec4 = {ctor: 'Vec4'};
+
 var _elm_lang$core$Dict$foldr = F3(
 	function (f, acc, t) {
 		foldr:
@@ -12947,6 +13191,12 @@ var _elm_lang$elm_architecture_tutorial$BlockModelDirection$getDirectionYAxis = 
 var _elm_lang$elm_architecture_tutorial$BlockModelDirection$getDirectionXAxis = function (row) {
 	return _elm_lang$core$Native_Utils.eq(row, 1) ? _elm_lang$core$Maybe$Just(_elm_lang$elm_architecture_tutorial$BlockModel$Right) : (_elm_lang$core$Native_Utils.eq(row, _elm_lang$elm_architecture_tutorial$Rib$size) ? _elm_lang$core$Maybe$Just(_elm_lang$elm_architecture_tutorial$BlockModel$Left) : _elm_lang$core$Maybe$Nothing);
 };
+var _elm_lang$elm_architecture_tutorial$BlockModelDirection$xyzRowToXYZDirection = function (xyz) {
+	var zDirection = _elm_lang$elm_architecture_tutorial$BlockModelDirection$getDirectionZAxis(xyz.z);
+	var yDirection = _elm_lang$elm_architecture_tutorial$BlockModelDirection$getDirectionYAxis(xyz.y);
+	var xDirection = _elm_lang$elm_architecture_tutorial$BlockModelDirection$getDirectionXAxis(xyz.x);
+	return {x: xDirection, y: yDirection, z: zDirection};
+};
 var _elm_lang$elm_architecture_tutorial$BlockModelDirection$directionToInitialColor = function (dir) {
 	var _p0 = dir;
 	switch (_p0.ctor) {
@@ -12999,9 +13249,9 @@ var _elm_lang$elm_architecture_tutorial$BlockToMatrixCoordinates$toMatrix = func
 	return (_elm_lang$elm_architecture_tutorial$Rib$sizeEven && (_elm_lang$core$Native_Utils.cmp(unevenResult, 0) > -1)) ? (unevenResult + 1) : unevenResult;
 };
 
-var _elm_lang$elm_architecture_tutorial$Vertex$Vertex = F2(
-	function (a, b) {
-		return {color: a, position: b};
+var _elm_lang$elm_architecture_tutorial$Vertex$Vertex = F3(
+	function (a, b, c) {
+		return {color: a, position: b, normal: c};
 	});
 
 var _elm_lang$elm_architecture_tutorial$BlockToVertexModel$toBlackFacesAndSingleColorFace = function (cBF) {
@@ -13229,39 +13479,6 @@ var _elm_lang$elm_architecture_tutorial$BlockToVertexPrototype$protoAllFaces = f
 		_elm_lang$elm_architecture_tutorial$BlockToVertexPrototype$preProtoAllFaces);
 }();
 
-var _elm_lang$elm_architecture_tutorial$CubeFace$faceOld = F5(
-	function (rawColor, a, b, c, d) {
-		var color = function () {
-			var c = _elm_lang$core$Color$toRgb(rawColor);
-			return A3(
-				_elm_community$linear_algebra$Math_Vector3$vec3,
-				_elm_lang$core$Basics$toFloat(c.red) / 255,
-				_elm_lang$core$Basics$toFloat(c.green) / 255,
-				_elm_lang$core$Basics$toFloat(c.blue) / 255);
-		}();
-		var vertex = function (position) {
-			return A2(_elm_lang$elm_architecture_tutorial$Vertex$Vertex, color, position);
-		};
-		return {
-			ctor: '::',
-			_0: {
-				ctor: '_Tuple3',
-				_0: vertex(a),
-				_1: vertex(b),
-				_2: vertex(c)
-			},
-			_1: {
-				ctor: '::',
-				_0: {
-					ctor: '_Tuple3',
-					_0: vertex(c),
-					_1: vertex(d),
-					_2: vertex(a)
-				},
-				_1: {ctor: '[]'}
-			}
-		};
-	});
 var _elm_lang$elm_architecture_tutorial$CubeFace$toFace3Vertex = function (_p0) {
 	var _p1 = _p0;
 	var _p3 = _p1._2;
@@ -13276,8 +13493,8 @@ var _elm_lang$elm_architecture_tutorial$CubeFace$toFace3Vertex = function (_p0) 
 		}
 	};
 };
-var _elm_lang$elm_architecture_tutorial$CubeFace$face = F2(
-	function (rawColor, _p4) {
+var _elm_lang$elm_architecture_tutorial$CubeFace$face = F3(
+	function (rawColor, _p4, normal) {
 		var _p5 = _p4;
 		var rgb = _elm_lang$core$Color$toRgb(rawColor);
 		var r = _elm_lang$core$Basics$toFloat(rgb.red) / 255;
@@ -13286,10 +13503,10 @@ var _elm_lang$elm_architecture_tutorial$CubeFace$face = F2(
 		var colorVec3 = A3(_elm_community$linear_algebra$Math_Vector3$vec3, r, g, b);
 		return {
 			ctor: '_Tuple4',
-			_0: A2(_elm_lang$elm_architecture_tutorial$Vertex$Vertex, colorVec3, _p5._0),
-			_1: A2(_elm_lang$elm_architecture_tutorial$Vertex$Vertex, colorVec3, _p5._1),
-			_2: A2(_elm_lang$elm_architecture_tutorial$Vertex$Vertex, colorVec3, _p5._2),
-			_3: A2(_elm_lang$elm_architecture_tutorial$Vertex$Vertex, colorVec3, _p5._3)
+			_0: A3(_elm_lang$elm_architecture_tutorial$Vertex$Vertex, colorVec3, _p5._0, normal),
+			_1: A3(_elm_lang$elm_architecture_tutorial$Vertex$Vertex, colorVec3, _p5._1, normal),
+			_2: A3(_elm_lang$elm_architecture_tutorial$Vertex$Vertex, colorVec3, _p5._2, normal),
+			_3: A3(_elm_lang$elm_architecture_tutorial$Vertex$Vertex, colorVec3, _p5._3, normal)
 		};
 	});
 
@@ -13307,7 +13524,13 @@ var _elm_lang$elm_architecture_tutorial$BlockToVertex$toVertexListPlusColors = f
 		{
 			black: A2(
 				_elm_lang$core$List$map,
-				_elm_lang$elm_architecture_tutorial$CubeFace$face(_elm_lang$core$Color$black),
+				function (color) {
+					return A3(
+						_elm_lang$elm_architecture_tutorial$CubeFace$face,
+						_elm_lang$core$Color$black,
+						color,
+						A3(_elm_community$linear_algebra$Math_Vector3$vec3, 1, 0, 0));
+				},
 				colorList.black)
 		});
 };
@@ -13448,71 +13671,168 @@ var _elm_lang$elm_architecture_tutorial$BlockToVertex$getFromDict = function (_p
 };
 var _elm_lang$elm_architecture_tutorial$BlockToVertex$singleBlockToVertexList = function (_p7) {
 	var _p8 = _p7;
-	var _p14 = _p8.colors;
-	var vertexListPlusFace3Colors = _elm_lang$elm_architecture_tutorial$BlockToVertex$getFromDict(_p8.rows);
+	var _p18 = _p8.rows;
+	var _p17 = _p8.colors;
+	var vertexListPlusFace3Colors = _elm_lang$elm_architecture_tutorial$BlockToVertex$getFromDict(_p18);
 	var _p9 = vertexListPlusFace3Colors;
 	if (_p9.ctor === 'Nothing') {
 		return {ctor: '[]'};
 	} else {
-		var _p13 = _p9._0;
-		var zFace = A2(
-			_elm_lang$core$Maybe$andThen,
-			function (face) {
-				return A2(
-					_elm_lang$core$Maybe$map,
-					function (color) {
-						return A2(_elm_lang$elm_architecture_tutorial$CubeFace$face, color, face);
-					},
-					_p14.z);
-			},
-			_p13.z);
-		var zMList = A2(_elm_lang$core$Maybe$map, _elm_lang$elm_architecture_tutorial$CubeFace$toFace3Vertex, zFace);
-		var zList = function () {
-			var _p10 = zMList;
+		var _p16 = _p9._0;
+		var zFace = function () {
+			var _p10 = _elm_lang$elm_architecture_tutorial$BlockModelDirection$getDirectionZAxis(_p18.z);
 			if (_p10.ctor === 'Nothing') {
-				return {ctor: '[]'};
+				return _elm_lang$core$Maybe$Nothing;
 			} else {
-				return _p10._0;
+				switch (_p10._0.ctor) {
+					case 'Back':
+						return A2(
+							_elm_lang$core$Maybe$andThen,
+							function (face) {
+								return A2(
+									_elm_lang$core$Maybe$map,
+									function (color) {
+										return A3(
+											_elm_lang$elm_architecture_tutorial$CubeFace$face,
+											color,
+											face,
+											A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, -1));
+									},
+									_p17.z);
+							},
+							_p16.z);
+					case 'Front':
+						return A2(
+							_elm_lang$core$Maybe$andThen,
+							function (face) {
+								return A2(
+									_elm_lang$core$Maybe$map,
+									function (color) {
+										return A3(
+											_elm_lang$elm_architecture_tutorial$CubeFace$face,
+											color,
+											face,
+											A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, 1));
+									},
+									_p17.z);
+							},
+							_p16.z);
+					default:
+						return _elm_lang$core$Maybe$Nothing;
+				}
 			}
 		}();
-		var yFace = A2(
-			_elm_lang$core$Maybe$andThen,
-			function (face) {
-				return A2(
-					_elm_lang$core$Maybe$map,
-					function (color) {
-						return A2(_elm_lang$elm_architecture_tutorial$CubeFace$face, color, face);
-					},
-					_p14.y);
-			},
-			_p13.y);
-		var yMList = A2(_elm_lang$core$Maybe$map, _elm_lang$elm_architecture_tutorial$CubeFace$toFace3Vertex, yFace);
-		var yList = function () {
-			var _p11 = yMList;
+		var zMList = A2(_elm_lang$core$Maybe$map, _elm_lang$elm_architecture_tutorial$CubeFace$toFace3Vertex, zFace);
+		var zList = function () {
+			var _p11 = zMList;
 			if (_p11.ctor === 'Nothing') {
 				return {ctor: '[]'};
 			} else {
 				return _p11._0;
 			}
 		}();
-		var xFace = A2(
-			_elm_lang$core$Maybe$andThen,
-			function (face) {
-				return A2(
-					_elm_lang$core$Maybe$map,
-					function (color) {
-						return A2(_elm_lang$elm_architecture_tutorial$CubeFace$face, color, face);
-					},
-					_p14.x);
-			},
-			_p13.x);
-		var xMList = A2(_elm_lang$core$Maybe$map, _elm_lang$elm_architecture_tutorial$CubeFace$toFace3Vertex, xFace);
-		var xList = function () {
-			var _p12 = xMList;
+		var yFace = function () {
+			var _p12 = _elm_lang$elm_architecture_tutorial$BlockModelDirection$getDirectionYAxis(_p18.y);
 			if (_p12.ctor === 'Nothing') {
+				return _elm_lang$core$Maybe$Nothing;
+			} else {
+				switch (_p12._0.ctor) {
+					case 'Top':
+						return A2(
+							_elm_lang$core$Maybe$andThen,
+							function (face) {
+								return A2(
+									_elm_lang$core$Maybe$map,
+									function (color) {
+										return A3(
+											_elm_lang$elm_architecture_tutorial$CubeFace$face,
+											color,
+											face,
+											A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, -1, 0));
+									},
+									_p17.y);
+							},
+							_p16.y);
+					case 'Down':
+						return A2(
+							_elm_lang$core$Maybe$andThen,
+							function (face) {
+								return A2(
+									_elm_lang$core$Maybe$map,
+									function (color) {
+										return A3(
+											_elm_lang$elm_architecture_tutorial$CubeFace$face,
+											color,
+											face,
+											A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 1, 0));
+									},
+									_p17.y);
+							},
+							_p16.y);
+					default:
+						return _elm_lang$core$Maybe$Nothing;
+				}
+			}
+		}();
+		var yMList = A2(_elm_lang$core$Maybe$map, _elm_lang$elm_architecture_tutorial$CubeFace$toFace3Vertex, yFace);
+		var yList = function () {
+			var _p13 = yMList;
+			if (_p13.ctor === 'Nothing') {
 				return {ctor: '[]'};
 			} else {
-				return _p12._0;
+				return _p13._0;
+			}
+		}();
+		var xFace = function () {
+			var _p14 = _elm_lang$elm_architecture_tutorial$BlockModelDirection$getDirectionXAxis(_p18.x);
+			if (_p14.ctor === 'Nothing') {
+				return _elm_lang$core$Maybe$Nothing;
+			} else {
+				switch (_p14._0.ctor) {
+					case 'Right':
+						return A2(
+							_elm_lang$core$Maybe$andThen,
+							function (face) {
+								return A2(
+									_elm_lang$core$Maybe$map,
+									function (color) {
+										return A3(
+											_elm_lang$elm_architecture_tutorial$CubeFace$face,
+											color,
+											face,
+											A3(_elm_community$linear_algebra$Math_Vector3$vec3, -1, 0, 0));
+									},
+									_p17.x);
+							},
+							_p16.x);
+					case 'Left':
+						return A2(
+							_elm_lang$core$Maybe$andThen,
+							function (face) {
+								return A2(
+									_elm_lang$core$Maybe$map,
+									function (color) {
+										return A3(
+											_elm_lang$elm_architecture_tutorial$CubeFace$face,
+											color,
+											face,
+											A3(_elm_community$linear_algebra$Math_Vector3$vec3, 1, 0, 0));
+									},
+									_p17.x);
+							},
+							_p16.x);
+					default:
+						return _elm_lang$core$Maybe$Nothing;
+				}
+			}
+		}();
+		var xMList = A2(_elm_lang$core$Maybe$map, _elm_lang$elm_architecture_tutorial$CubeFace$toFace3Vertex, xFace);
+		var xList = function () {
+			var _p15 = xMList;
+			if (_p15.ctor === 'Nothing') {
+				return {ctor: '[]'};
+			} else {
+				return _p15._0;
 			}
 		}();
 		return _elm_lang$core$List$concat(
@@ -13527,7 +13847,7 @@ var _elm_lang$elm_architecture_tutorial$BlockToVertex$singleBlockToVertexList = 
 						_0: zList,
 						_1: {
 							ctor: '::',
-							_0: _p13.black,
+							_0: _p16.black,
 							_1: {ctor: '[]'}
 						}
 					}
@@ -13952,7 +14272,9 @@ var _elm_lang$elm_architecture_tutorial$CommandToMessage$message = function (x) 
 			_elm_lang$core$Task$succeed(x)));
 };
 
-var _elm_lang$elm_architecture_tutorial$FragmentShader$fragmentShader = {'src': '\n\nprecision mediump float;\nuniform float shade;\nvarying vec3 vcolor;\nvoid main () {\n    gl_FragColor = shade * vec4(vcolor, 1.0);\n}\n\n'};
+var _elm_lang$elm_architecture_tutorial$FragmentShader$fragmentShader = {'src': '\n\nprecision mediump float;\n\nuniform float shade; // needed?\n\nvarying vec3 vColor;\nvarying vec3 vTransformedNormal;\nvarying vec4 vPosition;\n\nvoid main () {\n\n    if ( vColor == vec3(0.0,0.0,0.0)) {\n      gl_FragColor = vec4(0.0,0.0,0.0,1.0);\n    } else {\n       vec3 normal = normalize(vTransformedNormal);\n      vec3 eyeDirection = normalize( vPosition.xyz - vec3(0.0,0.0,5.0) );\n\n      vec3 ambientLight = vec3(0.6, 0.6, 0.6);\n      vec3 pointLightingColor = vec3(0.7, 0.7, 0.7);\n      vec3 pointLightingSpecularColor = vec3(0.3, 0.3, 0.3);\n      float materialShininess = 2.0;\n\n\n      vec3 lightDirection = vec3(0.0, 0.0, 5.0);\n      //vec3 relativeLightDirection = normalize( vPosition.xyz - lightDirection );\n      vec3 relativeLightDirection = normalize( vPosition.xyz - lightDirection);\n\n      //vec3 reflectionDirection = reflect(relativeLightDirection, normal); // original\n      vec3 reflectionDirection = reflect(-relativeLightDirection, normal); // original\n      //vec3 reflectionDirection = reflect(lightDirection, normal);\n\n      float specularLightWeighting = pow(max(dot(reflectionDirection, eyeDirection), 0.0), materialShininess);\n\n\n      float directionalLightWeighting = max(dot(normal, -relativeLightDirection), 0.0);\n      //float directionalLightWeighting = max(dot(normal, relativeLightDirection), 0.0);\n      //highp vec3 lightWeighting = ambientLight + pointLightingColor * directionalLightWeighting + specularLightWeighting * pointLightingSpecularColor;\n      //highp vec3 lightWeighting = ambientLight + specularLightWeighting * pointLightingSpecularColor;\n\n      highp vec3 lightWeighting = ambientLight + pointLightingColor * directionalLightWeighting;\n      //gl_FragColor = vec4(vColor * lightWeighting, 1.0);\n      gl_FragColor = vec4((vColor * lightWeighting+specularLightWeighting * pointLightingSpecularColor), 1.0);\n      //gl_FragColor = vec4(1.0,1.0,1.0,1.0);\n\n\n\n\n    }\n\n\n}\n\n'};
+
+var _elm_lang$elm_architecture_tutorial$FragmentShaderPicker$fragmentShader = {'src': '\n\nprecision mediump float;\nuniform float shade;\nvarying vec3 vcolor;\nvoid main () {\n    gl_FragColor = shade * vec4(vcolor, 1.0);\n}\n\n'};
 
 var _elm_lang$elm_architecture_tutorial$MainAngle$calculateMoveRowAngle = F2(
 	function (old, delta) {
@@ -14703,7 +15025,9 @@ var _elm_lang$elm_architecture_tutorial$MainModel$Model = function (a) {
 	};
 };
 
-var _elm_lang$elm_architecture_tutorial$VertexShader$vertexShader = {'src': '\n\nattribute vec3 position;\nattribute vec3 color;\nuniform mat4 perspective;\nuniform mat4 camera;\nuniform mat4 rotation;\nvarying vec3 vcolor;\nvoid main () {\n    gl_Position = perspective * camera * rotation * vec4(position, 1.0);\n    vcolor = color;\n}\n\n'};
+var _elm_lang$elm_architecture_tutorial$VertexShader$vertexShader = {'src': '\n\nattribute vec3 position;\nattribute vec3 color;\nattribute vec3 normal;\n\nuniform mat4 rotation;\nuniform mat4 perspective;\nuniform mat4 camera;\nvarying vec3 vColor;\nvarying vec3 vTransformedNormal;\nvarying vec4 vPosition;\n\nvoid main(void) {\n  vColor = color;\n  vPosition = rotation * vec4(position, 1.0);\n  gl_Position = perspective * camera * vPosition;\n  vec4 tempTransformedNormal = rotation * vec4(normal, 1.0);\n  //vTransformedNormal = vec3(1.0,0.0,0.0);//tempTransformedNormal.xyz;\n  vTransformedNormal = tempTransformedNormal.xyz;\n}\n'};
+
+var _elm_lang$elm_architecture_tutorial$VertexShaderPicker$vertexShader = {'src': '\n\nattribute vec3 position;\nattribute vec3 color;\nuniform mat4 perspective;\nuniform mat4 camera;\nuniform mat4 rotation;\nvarying vec3 vcolor;\nvoid main () {\n    gl_Position = perspective * camera * rotation * vec4(position, 1.0);\n    vcolor = color;\n}\n\n'};
 
 var _elm_lang$elm_architecture_tutorial$Uniforms$calculateRowRotationVec = F2(
 	function (axis, turn) {
@@ -14755,8 +15079,8 @@ var _elm_lang$elm_architecture_tutorial$SpinCubeGl$scenePicker = function (model
 		ctor: '::',
 		_0: A4(
 			_elm_community$webgl$WebGL$entity,
-			_elm_lang$elm_architecture_tutorial$VertexShader$vertexShader,
-			_elm_lang$elm_architecture_tutorial$FragmentShader$fragmentShader,
+			_elm_lang$elm_architecture_tutorial$VertexShaderPicker$vertexShader,
+			_elm_lang$elm_architecture_tutorial$FragmentShaderPicker$fragmentShader,
 			triangles,
 			_elm_lang$elm_architecture_tutorial$Uniforms$uniformsNoShade(model.rotationMatrix)),
 		_1: {ctor: '[]'}

@@ -9,8 +9,8 @@ import List
 import BlockToVertexModel
 
 
-face : Color -> BlockToVertexModel.Face -> BlockToVertexModel.FaceVertex
-face rawColor (one,two,three,four) =
+face : Color -> BlockToVertexModel.Face -> Vec3 -> BlockToVertexModel.FaceVertex
+face rawColor (one,two,three,four) normal =
   let
     rgb = toRgb rawColor
     r = (toFloat rgb.red   / 255)
@@ -18,7 +18,7 @@ face rawColor (one,two,three,four) =
     b = (toFloat rgb.blue  / 255)
     colorVec3 = vec3 r g b
   in
-    (Vertex colorVec3 one, Vertex colorVec3 two, Vertex colorVec3 three, Vertex colorVec3 four)
+    (Vertex colorVec3 one normal, Vertex colorVec3 two normal, Vertex colorVec3 three normal, Vertex colorVec3 four normal)
 
 
 toFace3Vertex: BlockToVertexModel.FaceVertex -> List BlockToVertexModel.Face3Vertex
@@ -28,7 +28,7 @@ toFace3Vertex (a,b,c,d) =
 
 
 ------------------------------------------------------------------
-
+{-
 faceOld : Color -> Vec3 -> Vec3 -> Vec3 -> Vec3 -> List ( Vertex, Vertex, Vertex )
 faceOld rawColor a b c d =
     let
@@ -48,3 +48,4 @@ faceOld rawColor a b c d =
         [ ( vertex a, vertex b, vertex c )
         , ( vertex c, vertex d, vertex a )
         ]
+-}
