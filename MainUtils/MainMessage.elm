@@ -2,6 +2,7 @@ module MainMessage exposing(..)
 
 import BlockModel
 import Mouse exposing (Position)
+import Keyboard
 
 type Msg =
     Frame Float
@@ -11,3 +12,4 @@ type Msg =
   | DragAt Position
   | DragEnd Position
   | MoveColor String
+  | KeyMsg Keyboard.KeyCode

@@ -10,6 +10,8 @@ import Html.Events exposing(onClick)
 import Json.Decode as Decode
 import Mouse exposing (Position)
 
+import Keyboard
+
 import WebGL exposing (Entity,entity,antialias,alpha,depth)
 
 import Rib
@@ -50,9 +52,9 @@ subscriptions : Model -> Sub Msg
 subscriptions model  =
   case model.dragging of
     True ->
-       Sub.batch [ AnimationFrame.diffs Frame, Mouse.moves DragAt, Mouse.ups DragEnd, listenForColors MoveColor]
+       Sub.batch [ AnimationFrame.diffs Frame, Mouse.moves DragAt, Mouse.ups DragEnd, listenForColors MoveColor, Keyboard.downs KeyMsg]
     False ->
-       Sub.batch [ AnimationFrame.diffs Frame, listenForColors MoveColor]
+       Sub.batch [ AnimationFrame.diffs Frame, listenForColors MoveColor, Keyboard.downs KeyMsg]
 {-
 subscriptions : Model -> Sub Msg
 subscriptions model =
@@ -133,6 +135,18 @@ update msg model =
     MoveColor color ->
       --(updateLastMoveByColor model color,Cmd.none)
       ({ model | colorPicked = ColorPicker.getByColor color},Cmd.none)
+    KeyMsg code ->
+      case code of
+        37 -> --left
+        ( {model | rotationMatrix = CalculateViewFromDrag.calculateView model.rotationMatrix 0.0 0.08 }, Cmd.none)
+        39 -> --right
+        ( {model | rotationMatrix = CalculateViewFromDrag.calculateView model.rotationMatrix 0.0 -0.08 }, Cmd.none)
+        38 -> --Up
+        ( {model | rotationMatrix = CalculateViewFromDrag.calculateView model.rotationMatrix 0.08 0.00 }, Cmd.none)
+        40 -> --Down
+        ( {model | rotationMatrix = CalculateViewFromDrag.calculateView model.rotationMatrix -0.08 0.00 }, Cmd.none)
+        _ ->
+        (model, Cmd.none)
 
 
 updateLastMoveByColor model face x y =
