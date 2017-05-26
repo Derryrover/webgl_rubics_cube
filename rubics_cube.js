@@ -13201,17 +13201,17 @@ var _elm_lang$elm_architecture_tutorial$BlockModelDirection$directionToInitialCo
 	var _p0 = dir;
 	switch (_p0.ctor) {
 		case 'Top':
-			return _elm_lang$core$Color$red;
+			return A3(_elm_lang$core$Color$rgb, 235, 131, 32);
 		case 'Down':
-			return _elm_lang$core$Color$green;
+			return A3(_elm_lang$core$Color$rgb, 223, 29, 20);
 		case 'Left':
-			return _elm_lang$core$Color$blue;
+			return A3(_elm_lang$core$Color$rgb, 88, 222, 50);
 		case 'Right':
-			return _elm_lang$core$Color$orange;
+			return A3(_elm_lang$core$Color$rgb, 1, 8, 116);
 		case 'Front':
-			return _elm_lang$core$Color$yellow;
+			return A3(_elm_lang$core$Color$rgb, 193, 197, 197);
 		default:
-			return _elm_lang$core$Color$white;
+			return A3(_elm_lang$core$Color$rgb, 228, 231, 33);
 	}
 };
 var _elm_lang$elm_architecture_tutorial$BlockModelDirection$xyzRowToXYZColor = function (xyz) {
@@ -14272,7 +14272,7 @@ var _elm_lang$elm_architecture_tutorial$CommandToMessage$message = function (x) 
 			_elm_lang$core$Task$succeed(x)));
 };
 
-var _elm_lang$elm_architecture_tutorial$FragmentShader$fragmentShader = {'src': '\n\nprecision mediump float;\n\nuniform float shade; // needed?\n\nvarying vec3 vColor;\nvarying vec3 vTransformedNormal;\nvarying vec4 vPosition;\n\nvoid main () {\n\n    if ( vColor == vec3(0.0,0.0,0.0)) {\n      gl_FragColor = vec4(0.0,0.0,0.0,1.0);\n    } else {\n       vec3 normal = normalize(vTransformedNormal);\n      vec3 eyeDirection = normalize( vPosition.xyz - vec3(0.0,0.0,5.0) );\n\n      vec3 ambientLight = vec3(0.6, 0.6, 0.6);\n      vec3 pointLightingColor = vec3(0.7, 0.7, 0.7);\n      vec3 pointLightingSpecularColor = vec3(0.3, 0.3, 0.3);\n      float materialShininess = 2.0;\n\n\n      vec3 lightDirection = vec3(0.0, 0.0, 5.0);\n      //vec3 relativeLightDirection = normalize( vPosition.xyz - lightDirection );\n      vec3 relativeLightDirection = normalize( vPosition.xyz - lightDirection);\n\n      //vec3 reflectionDirection = reflect(relativeLightDirection, normal); // original\n      vec3 reflectionDirection = reflect(-relativeLightDirection, normal); // original\n      //vec3 reflectionDirection = reflect(lightDirection, normal);\n\n      float specularLightWeighting = pow(max(dot(reflectionDirection, eyeDirection), 0.0), materialShininess);\n\n\n      float directionalLightWeighting = max(dot(normal, -relativeLightDirection), 0.0);\n      //float directionalLightWeighting = max(dot(normal, relativeLightDirection), 0.0);\n      //highp vec3 lightWeighting = ambientLight + pointLightingColor * directionalLightWeighting + specularLightWeighting * pointLightingSpecularColor;\n      //highp vec3 lightWeighting = ambientLight + specularLightWeighting * pointLightingSpecularColor;\n\n      highp vec3 lightWeighting = ambientLight + pointLightingColor * directionalLightWeighting;\n      //gl_FragColor = vec4(vColor * lightWeighting, 1.0);\n      gl_FragColor = vec4((vColor * lightWeighting+specularLightWeighting * pointLightingSpecularColor), 1.0);\n      //gl_FragColor = vec4(1.0,1.0,1.0,1.0);\n\n\n\n\n    }\n\n\n}\n\n'};
+var _elm_lang$elm_architecture_tutorial$FragmentShader$fragmentShader = {'src': '\n\nprecision mediump float;\n\nuniform float shade; // needed?\n\nvarying vec3 vColor;\nvarying vec3 vTransformedNormal;\nvarying vec4 vPosition;\n\nvoid main () {\n\n    if ( vColor == vec3(0.0,0.0,0.0)) {\n      gl_FragColor = vec4(0.0,0.0,0.0,1.0);\n    } else {\n       vec3 normal = normalize(vTransformedNormal);\n      vec3 eyeDirection = normalize( vPosition.xyz - vec3(0.0,0.0,5.0) );\n\n      vec3 ambientLight = vec3(0.28, 0.28, 0.28);//vec3(0.6, 0.6, 0.6);\n      vec3 pointLightingColor = vec3(0.65, 0.65, 0.65);//vec3(0.7, 0.7, 0.7);\n      vec3 pointLightingSpecularColor = vec3(0.28, 0.28, 0.28);\n      float materialShininess = 31.5;//2.0;\n\n\n      vec3 lightDirectionPoint = vec3( 0.0,  0.0,  5.0);\n      vec3 lightDirectionSpec1 = vec3( 0.0,  0.0,  5.0);\n      vec3 lightDirectionSpec2 = vec3( 1.0,  5.0, -2.0);\n      vec3 lightDirectionSpec3 = vec3( 5.0, -3.0, -3.0);\n      vec3 lightDirectionSpec4 = vec3( 0.0, -7.0,  1.0);\n\n      vec3 relativeLightDirectionPoint = normalize( vPosition.xyz - lightDirectionPoint);\n      vec3 relativeLightDirectionSpec1 = normalize( vPosition.xyz - lightDirectionSpec1);\n      vec3 relativeLightDirectionSpec2 = normalize( vPosition.xyz - lightDirectionSpec2);\n      vec3 relativeLightDirectionSpec3 = normalize( vPosition.xyz - lightDirectionSpec3);\n      vec3 relativeLightDirectionSpec4 = normalize( vPosition.xyz - lightDirectionSpec4);\n\n      vec3 reflectionDirection1 = reflect(-relativeLightDirectionSpec1, normal); // original\n      vec3 reflectionDirection2 = reflect(-relativeLightDirectionSpec2, normal); // original\n      vec3 reflectionDirection3 = reflect(-relativeLightDirectionSpec3, normal); // original\n      vec3 reflectionDirection4 = reflect(-relativeLightDirectionSpec4, normal); // original\n\n      float specularLightWeighting1 = pow(max(dot(reflectionDirection1, eyeDirection), 0.0), materialShininess);\n      float specularLightWeighting2 = pow(max(dot(reflectionDirection2, eyeDirection), 0.0), materialShininess);\n      float specularLightWeighting3 = pow(max(dot(reflectionDirection3, eyeDirection), 0.0), materialShininess);\n      float specularLightWeighting4 = pow(max(dot(reflectionDirection4, eyeDirection), 0.0), materialShininess);\n\n\n      float directionalLightWeighting = max(dot(normal, -relativeLightDirectionPoint), 0.0);\n\n\n      highp vec3 lightWeighting = ambientLight + pointLightingColor * directionalLightWeighting;\n      gl_FragColor = vec4((vColor * lightWeighting + specularLightWeighting1 * pointLightingSpecularColor\n                                                   + specularLightWeighting2 * pointLightingSpecularColor\n                                                   + specularLightWeighting3 * pointLightingSpecularColor\n                                                   + specularLightWeighting4 * pointLightingSpecularColor), 1.0);\n\n\n\n\n    }\n\n\n}\n\n'};
 
 var _elm_lang$elm_architecture_tutorial$FragmentShaderPicker$fragmentShader = {'src': '\n\nprecision mediump float;\nuniform float shade;\nvarying vec3 vcolor;\nvoid main () {\n    gl_FragColor = shade * vec4(vcolor, 1.0);\n}\n\n'};
 
@@ -15103,6 +15103,9 @@ var _elm_lang$keyboard$Keyboard$subMap = F2(
 	});
 _elm_lang$core$Native_Platform.effectManagers['Keyboard'] = {pkg: 'elm-lang/keyboard', init: _elm_lang$keyboard$Keyboard$init, onEffects: _elm_lang$keyboard$Keyboard$onEffects, onSelfMsg: _elm_lang$keyboard$Keyboard$onSelfMsg, tag: 'sub', subMap: _elm_lang$keyboard$Keyboard$subMap};
 
+var _elm_lang$elm_architecture_tutorial$MainMessage$KeyMsgUp = function (a) {
+	return {ctor: 'KeyMsgUp', _0: a};
+};
 var _elm_lang$elm_architecture_tutorial$MainMessage$KeyMsg = function (a) {
 	return {ctor: 'KeyMsg', _0: a};
 };
@@ -15163,7 +15166,11 @@ var _elm_lang$elm_architecture_tutorial$MainModel$init = {
 			_elm_community$linear_algebra$Math_Matrix4$makeRotate,
 			_elm_lang$core$Basics$pi * 0.3,
 			A3(_elm_community$linear_algebra$Math_Vector3$vec3, 1, 1, 0)),
-		colorPicked: _elm_lang$core$Maybe$Nothing
+		colorPicked: _elm_lang$core$Maybe$Nothing,
+		arrowUp: false,
+		arrowDown: false,
+		arrowLeft: false,
+		arrowRight: false
 	},
 	_1: _elm_lang$core$Platform_Cmd$none
 };
@@ -15181,7 +15188,15 @@ var _elm_lang$elm_architecture_tutorial$MainModel$Model = function (a) {
 											return function (l) {
 												return function (m) {
 													return function (n) {
-														return {cube: a, picker: b, angle: c, moves: d, movingRow: e, lastMove: f, movingRowAngle: g, dragging: h, beginDragX: i, beginDragY: j, formerDragX: k, formerDragY: l, rotationMatrix: m, colorPicked: n};
+														return function (o) {
+															return function (p) {
+																return function (q) {
+																	return function (r) {
+																		return {cube: a, picker: b, angle: c, moves: d, movingRow: e, lastMove: f, movingRowAngle: g, dragging: h, beginDragX: i, beginDragY: j, formerDragX: k, formerDragY: l, rotationMatrix: m, colorPicked: n, arrowUp: o, arrowDown: p, arrowLeft: q, arrowRight: r};
+																	};
+																};
+															};
+														};
 													};
 												};
 											};
@@ -15301,15 +15316,62 @@ var _elm_lang$elm_architecture_tutorial$SpinCubeGl$sceneSpinRow = function (mode
 
 var _elm_lang$elm_architecture_tutorial$MainUpdateFrame$updateFrame = F2(
 	function (model, dt) {
-		var viewAngle = A2(_elm_lang$elm_architecture_tutorial$MainAngle$calculateAngle, model.angle, dt);
-		var moveAngle = A2(_elm_lang$elm_architecture_tutorial$MainAngle$calculateMoveRowAngle, model.movingRowAngle, dt);
-		var _p0 = _elm_lang$core$Native_Utils.cmp(moveAngle, 0.5 * _elm_lang$core$Basics$pi) > 0;
-		if (_p0 === true) {
+		var yKeys0 = function () {
+			var _p0 = model.arrowUp;
+			if (_p0 === true) {
+				var _p1 = model.arrowDown;
+				if (_p1 === true) {
+					return 0.0;
+				} else {
+					return 8.0e-2;
+				}
+			} else {
+				var _p2 = model.arrowDown;
+				if (_p2 === true) {
+					return -8.0e-2;
+				} else {
+					return 0.0;
+				}
+			}
+		}();
+		var xKeys0 = function () {
+			var _p3 = model.arrowLeft;
+			if (_p3 === true) {
+				var _p4 = model.arrowRight;
+				if (_p4 === true) {
+					return 0.0;
+				} else {
+					return 8.0e-2;
+				}
+			} else {
+				var _p5 = model.arrowRight;
+				if (_p5 === true) {
+					return -8.0e-2;
+				} else {
+					return 0.0;
+				}
+			}
+		}();
+		var xKeys = _elm_lang$core$Native_Utils.eq(yKeys0, 0) ? xKeys0 : ((_elm_lang$core$Native_Utils.cmp(xKeys0, 0) > 0) ? _elm_lang$core$Basics$sqrt((xKeys0 * xKeys0) / 2) : (0 - _elm_lang$core$Basics$sqrt((xKeys0 * xKeys0) / 2)));
+		var yKeys = _elm_lang$core$Native_Utils.eq(xKeys0, 0) ? yKeys0 : ((_elm_lang$core$Native_Utils.cmp(yKeys0, 0) > 0) ? _elm_lang$core$Basics$sqrt((yKeys0 * yKeys0) / 2) : (0 - _elm_lang$core$Basics$sqrt((yKeys0 * yKeys0) / 2)));
+		var moveAngle = function () {
+			var _p6 = model.movingRow;
+			if (_p6 === false) {
+				return 0.0;
+			} else {
+				return A2(_elm_lang$elm_architecture_tutorial$MainAngle$calculateMoveRowAngle, model.movingRowAngle, dt);
+			}
+		}();
+		var _p7 = _elm_lang$core$Native_Utils.cmp(moveAngle, 0.5 * _elm_lang$core$Basics$pi) > 0;
+		if (_p7 === true) {
 			return {
 				ctor: '_Tuple2',
 				_0: _elm_lang$core$Native_Utils.update(
 					model,
-					{angle: viewAngle, movingRowAngle: 0}),
+					{
+						movingRowAngle: 0,
+						rotationMatrix: A3(_elm_lang$elm_architecture_tutorial$CalculateViewFromDrag$calculateView, model.rotationMatrix, yKeys, xKeys)
+					}),
 				_1: _elm_lang$elm_architecture_tutorial$CommandToMessage$message(_elm_lang$elm_architecture_tutorial$MainMessage$EndMove)
 			};
 		} else {
@@ -15317,7 +15379,10 @@ var _elm_lang$elm_architecture_tutorial$MainUpdateFrame$updateFrame = F2(
 				ctor: '_Tuple2',
 				_0: _elm_lang$core$Native_Utils.update(
 					model,
-					{angle: viewAngle, movingRowAngle: moveAngle}),
+					{
+						movingRowAngle: moveAngle,
+						rotationMatrix: A3(_elm_lang$elm_architecture_tutorial$CalculateViewFromDrag$calculateView, model.rotationMatrix, yKeys, xKeys)
+					}),
 				_1: _elm_lang$core$Platform_Cmd$none
 			};
 		}
@@ -15619,6 +15684,61 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$updateLastMoveByColor = F4(
 				movingRow: true
 			});
 	});
+var _elm_lang$elm_architecture_tutorial$RubicsCube$retriggerArrowUpDown = function (model) {
+	var _p0 = model.arrowUp;
+	if (_p0 === true) {
+		return _elm_lang$elm_architecture_tutorial$CommandToMessage$message(
+			_elm_lang$elm_architecture_tutorial$MainMessage$KeyMsg(38));
+	} else {
+		var _p1 = model.arrowDown;
+		if (_p1 === true) {
+			return _elm_lang$elm_architecture_tutorial$CommandToMessage$message(
+				_elm_lang$elm_architecture_tutorial$MainMessage$KeyMsg(40));
+		} else {
+			return _elm_lang$core$Platform_Cmd$none;
+		}
+	}
+};
+var _elm_lang$elm_architecture_tutorial$RubicsCube$retriggerArrowLeftRight = function (model) {
+	var _p2 = model.arrowLeft;
+	if (_p2 === true) {
+		return _elm_lang$core$Platform_Cmd$none;
+	} else {
+		var _p3 = model.arrowRight;
+		if (_p3 === true) {
+			return _elm_lang$elm_architecture_tutorial$CommandToMessage$message(
+				_elm_lang$elm_architecture_tutorial$MainMessage$KeyMsg(39));
+		} else {
+			return _elm_lang$core$Platform_Cmd$none;
+		}
+	}
+};
+var _elm_lang$elm_architecture_tutorial$RubicsCube$getKeyStateDirectionLeftRight = function (model) {
+	var _p4 = model.arrowLeft;
+	if (_p4 === true) {
+		return 8.0e-2;
+	} else {
+		var _p5 = model.arrowRight;
+		if (_p5 === true) {
+			return -8.0e-2;
+		} else {
+			return 0.0;
+		}
+	}
+};
+var _elm_lang$elm_architecture_tutorial$RubicsCube$getKeyStateDirectionUpDown = function (model) {
+	var _p6 = model.arrowUp;
+	if (_p6 === true) {
+		return 8.0e-2;
+	} else {
+		var _p7 = model.arrowDown;
+		if (_p7 === true) {
+			return -8.0e-2;
+		} else {
+			return 0.0;
+		}
+	}
+};
 var _elm_lang$elm_architecture_tutorial$RubicsCube$sendCoordinates = _elm_lang$core$Native_Platform.outgoingPort(
 	'sendCoordinates',
 	function (v) {
@@ -15626,51 +15746,51 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$sendCoordinates = _elm_lang$c
 	});
 var _elm_lang$elm_architecture_tutorial$RubicsCube$update = F2(
 	function (msg, model) {
-		var _p0 = msg;
-		switch (_p0.ctor) {
+		var _p8 = msg;
+		switch (_p8.ctor) {
 			case 'DragStart':
-				var _p2 = _p0._0;
-				var _p1 = model.movingRow;
-				if (_p1 === false) {
+				var _p10 = _p8._0;
+				var _p9 = model.movingRow;
+				if (_p9 === false) {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								formerDragX: _elm_lang$core$Basics$toFloat(_p2.x),
-								formerDragY: _elm_lang$core$Basics$toFloat(_p2.y),
-								beginDragX: _elm_lang$core$Basics$toFloat(_p2.x),
-								beginDragY: _elm_lang$core$Basics$toFloat(_p2.y),
+								formerDragX: _elm_lang$core$Basics$toFloat(_p10.x),
+								formerDragY: _elm_lang$core$Basics$toFloat(_p10.y),
+								beginDragX: _elm_lang$core$Basics$toFloat(_p10.x),
+								beginDragY: _elm_lang$core$Basics$toFloat(_p10.y),
 								dragging: true
 							}),
 						_1: _elm_lang$elm_architecture_tutorial$RubicsCube$sendCoordinates(
 							A2(
 								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(_p2.x),
+								_elm_lang$core$Basics$toString(_p10.x),
 								A2(
 									_elm_lang$core$Basics_ops['++'],
 									',',
-									_elm_lang$core$Basics$toString(_p2.y))))
+									_elm_lang$core$Basics$toString(_p10.y))))
 					};
 				} else {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
 			case 'DragAt':
-				var _p7 = _p0._0;
-				var _p3 = model.dragging;
-				if (_p3 === true) {
-					var _p4 = model.colorPicked;
-					if (_p4.ctor === 'Just') {
-						var _p5 = model.movingRow;
-						if (_p5 === true) {
+				var _p15 = _p8._0;
+				var _p11 = model.dragging;
+				if (_p11 === true) {
+					var _p12 = model.colorPicked;
+					if (_p12.ctor === 'Just') {
+						var _p13 = model.movingRow;
+						if (_p13 === true) {
 							return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 						} else {
-							var _p6 = _elm_lang$core$Native_Utils.cmp(
+							var _p14 = _elm_lang$core$Native_Utils.cmp(
 								_elm_lang$core$Basics$abs(
-									model.beginDragX - _elm_lang$core$Basics$toFloat(_p7.x)) + _elm_lang$core$Basics$abs(
-									model.beginDragY - _elm_lang$core$Basics$toFloat(_p7.y)),
+									model.beginDragX - _elm_lang$core$Basics$toFloat(_p15.x)) + _elm_lang$core$Basics$abs(
+									model.beginDragY - _elm_lang$core$Basics$toFloat(_p15.y)),
 								80) > 0;
-							if (_p6 === false) {
+							if (_p14 === false) {
 								return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 							} else {
 								return {
@@ -15678,9 +15798,9 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$update = F2(
 									_0: A4(
 										_elm_lang$elm_architecture_tutorial$RubicsCube$updateLastMoveByColor,
 										model,
-										_p4._0,
-										model.beginDragY - _elm_lang$core$Basics$toFloat(_p7.y),
-										model.beginDragX - _elm_lang$core$Basics$toFloat(_p7.x)),
+										_p12._0,
+										model.beginDragY - _elm_lang$core$Basics$toFloat(_p15.y),
+										model.beginDragX - _elm_lang$core$Basics$toFloat(_p15.x)),
 									_1: _elm_lang$core$Platform_Cmd$none
 								};
 							}
@@ -15694,10 +15814,10 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$update = F2(
 									rotationMatrix: A3(
 										_elm_lang$elm_architecture_tutorial$CalculateViewFromDrag$calculateView,
 										model.rotationMatrix,
-										(model.formerDragY - _elm_lang$core$Basics$toFloat(_p7.y)) / 180,
-										(model.formerDragX - _elm_lang$core$Basics$toFloat(_p7.x)) / 180),
-									formerDragX: _elm_lang$core$Basics$toFloat(_p7.x),
-									formerDragY: _elm_lang$core$Basics$toFloat(_p7.y)
+										(model.formerDragY - _elm_lang$core$Basics$toFloat(_p15.y)) / 180,
+										(model.formerDragX - _elm_lang$core$Basics$toFloat(_p15.x)) / 180),
+									formerDragX: _elm_lang$core$Basics$toFloat(_p15.x),
+									formerDragY: _elm_lang$core$Basics$toFloat(_p15.y)
 								}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						};
@@ -15714,18 +15834,13 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'Frame':
-				var _p8 = model.movingRow;
-				if (_p8 === false) {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-				} else {
-					return A2(_elm_lang$elm_architecture_tutorial$MainUpdateFrame$updateFrame, model, _p0._0);
-				}
+				return A2(_elm_lang$elm_architecture_tutorial$MainUpdateFrame$updateFrame, model, _p8._0);
 			case 'MoveRow':
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{lastMove: _p0._0, movingRow: true}),
+						{lastMove: _p8._0, movingRow: true}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'EndMove':
@@ -15749,21 +15864,19 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$update = F2(
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							colorPicked: _elm_lang$elm_architecture_tutorial$ColorPicker$getByColor(_p0._0)
+							colorPicked: _elm_lang$elm_architecture_tutorial$ColorPicker$getByColor(_p8._0)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
-			default:
-				var _p9 = _p0._0;
-				switch (_p9) {
+			case 'KeyMsg':
+				var _p16 = _p8._0;
+				switch (_p16) {
 					case 37:
 						return {
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{
-									rotationMatrix: A3(_elm_lang$elm_architecture_tutorial$CalculateViewFromDrag$calculateView, model.rotationMatrix, 0.0, 8.0e-2)
-								}),
+								{arrowLeft: true}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						};
 					case 39:
@@ -15771,9 +15884,7 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$update = F2(
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{
-									rotationMatrix: A3(_elm_lang$elm_architecture_tutorial$CalculateViewFromDrag$calculateView, model.rotationMatrix, 0.0, -8.0e-2)
-								}),
+								{arrowRight: true}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						};
 					case 38:
@@ -15781,9 +15892,7 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$update = F2(
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{
-									rotationMatrix: A3(_elm_lang$elm_architecture_tutorial$CalculateViewFromDrag$calculateView, model.rotationMatrix, 8.0e-2, 0.0)
-								}),
+								{arrowUp: true}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						};
 					case 40:
@@ -15791,9 +15900,45 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$update = F2(
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{
-									rotationMatrix: A3(_elm_lang$elm_architecture_tutorial$CalculateViewFromDrag$calculateView, model.rotationMatrix, -8.0e-2, 0.0)
-								}),
+								{arrowDown: true}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
+					default:
+						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+			default:
+				var _p17 = _p8._0;
+				switch (_p17) {
+					case 37:
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{arrowLeft: false}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
+					case 39:
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{arrowRight: false}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
+					case 38:
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{arrowUp: false}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
+					case 40:
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{arrowDown: false}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						};
 					default:
@@ -15803,8 +15948,8 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$update = F2(
 	});
 var _elm_lang$elm_architecture_tutorial$RubicsCube$listenForColors = _elm_lang$core$Native_Platform.incomingPort('listenForColors', _elm_lang$core$Json_Decode$string);
 var _elm_lang$elm_architecture_tutorial$RubicsCube$subscriptions = function (model) {
-	var _p10 = model.dragging;
-	if (_p10 === true) {
+	var _p18 = model.dragging;
+	if (_p18 === true) {
 		return _elm_lang$core$Platform_Sub$batch(
 			{
 				ctor: '::',
@@ -15821,7 +15966,11 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$subscriptions = function (mod
 							_1: {
 								ctor: '::',
 								_0: _elm_lang$keyboard$Keyboard$downs(_elm_lang$elm_architecture_tutorial$MainMessage$KeyMsg),
-								_1: {ctor: '[]'}
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$keyboard$Keyboard$ups(_elm_lang$elm_architecture_tutorial$MainMessage$KeyMsgUp),
+									_1: {ctor: '[]'}
+								}
 							}
 						}
 					}
@@ -15838,7 +15987,11 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$subscriptions = function (mod
 					_1: {
 						ctor: '::',
 						_0: _elm_lang$keyboard$Keyboard$downs(_elm_lang$elm_architecture_tutorial$MainMessage$KeyMsg),
-						_1: {ctor: '[]'}
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$keyboard$Keyboard$ups(_elm_lang$elm_architecture_tutorial$MainMessage$KeyMsgUp),
+							_1: {ctor: '[]'}
+						}
 					}
 				}
 			});

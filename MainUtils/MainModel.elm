@@ -24,6 +24,10 @@ type alias Model =
   , formerDragY: Float
   , rotationMatrix: Matrix4.Mat4
   , colorPicked: Maybe BlockModel.Face
+  , arrowUp: Bool
+  , arrowDown: Bool
+  , arrowLeft: Bool
+  , arrowRight: Bool
   }
 
 init: (Model, Cmd msg)
@@ -42,6 +46,10 @@ init =
   , formerDragY = 0
   , rotationMatrix = Matrix4.makeRotate (Basics.pi * 0.3) (vec3 1 1 0)
   , colorPicked = Nothing
+  , arrowUp = False
+  , arrowDown = False
+  , arrowLeft = False
+  , arrowRight = False
   --Matrix4.makeRotate (Basics.pi * 0.29) (vec3 1 1 0)
   --Matrix4.makeRotate (Basics.pi*0.5) (vec3 1 1 0)
   --Matrix4.makeRotate (Basics.pi*0.25) (vec3 1 (Basics.acos (0.5)) 0) --((Basics.acos (0.5))/Basics.pi)

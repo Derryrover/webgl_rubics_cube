@@ -13,3 +13,4 @@ type Msg =
   | DragEnd Position
   | MoveColor String
   | KeyMsg Keyboard.KeyCode
+  | KeyMsgUp Keyboard.KeyCode

@@ -11,6 +11,7 @@ import Json.Decode as Decode
 import Mouse exposing (Position)
 
 import Keyboard
+import CommandToMessage
 
 import WebGL exposing (Entity,entity,antialias,alpha,depth)
 
@@ -52,9 +53,9 @@ subscriptions : Model -> Sub Msg
 subscriptions model  =
   case model.dragging of
     True ->
-       Sub.batch [ AnimationFrame.diffs Frame, Mouse.moves DragAt, Mouse.ups DragEnd, listenForColors MoveColor, Keyboard.downs KeyMsg]
+       Sub.batch [ AnimationFrame.diffs Frame, Mouse.moves DragAt, Mouse.ups DragEnd, listenForColors MoveColor, Keyboard.downs KeyMsg, Keyboard.ups KeyMsgUp]
     False ->
-       Sub.batch [ AnimationFrame.diffs Frame, listenForColors MoveColor, Keyboard.downs KeyMsg]
+       Sub.batch [ AnimationFrame.diffs Frame, listenForColors MoveColor, Keyboard.downs KeyMsg, Keyboard.ups KeyMsgUp]
 {-
 subscriptions : Model -> Sub Msg
 subscriptions model =
@@ -113,6 +114,8 @@ update msg model =
                , dragging = False} , Cmd.none)
       --(model,Cmd.none)
     Frame dt ->
+      updateFrame model dt
+      {-
       case model.movingRow of
         False ->
           (model,Cmd.none)
@@ -121,7 +124,7 @@ update msg model =
                    , angleHorizontal = calculateAngle model.angleHorizontal dt
                    , angleVertical   = calculateAngle model.angleVertical   dt } , Cmd.none)-}
         True  ->
-          updateFrame model dt
+          updateFrame model dt-}
     MoveRow move ->
         ({ model | lastMove = move
                  , movingRow = True },Cmd.none)
@@ -138,15 +141,77 @@ update msg model =
     KeyMsg code ->
       case code of
         37 -> --left
-        ( {model | rotationMatrix = CalculateViewFromDrag.calculateView model.rotationMatrix 0.0 0.08 }, Cmd.none)
+        ( {model | arrowLeft = True}, Cmd.none)--, rotationMatrix = CalculateViewFromDrag.calculateView model.rotationMatrix (getKeyStateDirectionUpDown model) 0.08 }, Cmd.none)
+        --( {model | arrowLeft = True, rotationMatrix = CalculateViewFromDrag.calculateView model.rotationMatrix 0.0 0.08 }, Cmd.none)
         39 -> --right
-        ( {model | rotationMatrix = CalculateViewFromDrag.calculateView model.rotationMatrix 0.0 -0.08 }, Cmd.none)
+        ( {model | arrowRight = True}, Cmd.none)--, rotationMatrix = CalculateViewFromDrag.calculateView model.rotationMatrix (getKeyStateDirectionUpDown model) -0.08 }, Cmd.none)
+        --( {model | arrowRight = True, rotationMatrix = CalculateViewFromDrag.calculateView model.rotationMatrix 0.0 -0.08 }, Cmd.none)
         38 -> --Up
-        ( {model | rotationMatrix = CalculateViewFromDrag.calculateView model.rotationMatrix 0.08 0.00 }, Cmd.none)
+        ( {model | arrowUp = True}, Cmd.none)--, rotationMatrix = CalculateViewFromDrag.calculateView model.rotationMatrix 0.08 (getKeyStateDirectionLeftRight model) }, Cmd.none)
         40 -> --Down
-        ( {model | rotationMatrix = CalculateViewFromDrag.calculateView model.rotationMatrix -0.08 0.00 }, Cmd.none)
+        ( {model | arrowDown = True}, Cmd.none)--, rotationMatrix = CalculateViewFromDrag.calculateView model.rotationMatrix -0.08 (getKeyStateDirectionLeftRight model) }, Cmd.none)
         _ ->
         (model, Cmd.none)
+    KeyMsgUp code ->
+      case code of
+        37 -> --left
+        ( {model | arrowLeft = False}, Cmd.none)--retriggerArrowUpDown model)--Cmd.none)
+        39 -> --right
+        ( {model | arrowRight = False}, Cmd.none)--retriggerArrowUpDown model)--Cmd.none)
+        38 -> --Up
+        ( {model | arrowUp = False}, Cmd.none)--retriggerArrowLeftRight model)--Cmd.none)
+        40 -> --Down
+        ( {model | arrowDown = False}, Cmd.none)--retriggerArrowLeftRight model)--Cmd.none)
+        _ ->
+        (model, Cmd.none)
+
+getKeyStateDirectionUpDown: Model -> Float
+getKeyStateDirectionUpDown model =
+  case model.arrowUp of
+    True ->
+      0.08
+    False ->
+      case model.arrowDown of
+        True ->
+          -0.08
+        False ->
+          0.0
+
+getKeyStateDirectionLeftRight: Model -> Float
+getKeyStateDirectionLeftRight model =
+  case model.arrowLeft of
+    True ->
+      0.08
+    False ->
+      case model.arrowRight of
+        True ->
+          -0.08
+        False ->
+          0.0
+
+retriggerArrowLeftRight: Model -> Cmd Msg
+retriggerArrowLeftRight model =
+  case model.arrowLeft of
+    True ->
+      (Cmd.none)--CommandToMessage.message (KeyMsg 37)
+    False ->
+      case model.arrowRight of
+        True ->
+          CommandToMessage.message (KeyMsg 39)
+        False ->
+          (Cmd.none)
+
+retriggerArrowUpDown: Model -> Cmd Msg
+retriggerArrowUpDown model =
+  case model.arrowUp of
+    True ->
+      CommandToMessage.message (KeyMsg 38)
+    False ->
+      case model.arrowDown of
+        True ->
+          CommandToMessage.message (KeyMsg 40)
+        False ->
+          (Cmd.none)
 
 
 updateLastMoveByColor model face x y =

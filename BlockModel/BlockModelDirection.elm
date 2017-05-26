@@ -10,17 +10,23 @@ directionToInitialColor: BlockModel.Direction -> BlockModel.Color
 directionToInitialColor dir =
   case dir of
     BlockModel.Top ->
-      Color.red
+      --Color.orange
+      Color.rgb 235 131 32
     BlockModel.Down ->
-      Color.green
+      --Color.red
+      Color.rgb 223 29 20
     BlockModel.Left ->
-      Color.blue
+      --Color.green
+      Color.rgb 88 222 50
     BlockModel.Right ->
-      Color.orange
+      --Color.blue
+      Color.rgb 1 8 116
     BlockModel.Front ->
-      Color.yellow
+      --Color.white
+      Color.rgb 193 197 197
     BlockModel.Back ->
-      Color.white
+      --Color.yellow
+      Color.rgb 228 231 33
 
 getDirectionXAxis: BlockModel.Row -> Maybe BlockModel.Direction
 getDirectionXAxis row =
