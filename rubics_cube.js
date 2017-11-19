@@ -15615,7 +15615,7 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$onTouchEnd = function (positi
 	return _elm_lang$elm_architecture_tutorial$MainMessage$DragEnd(
 		_elm_lang$elm_architecture_tutorial$RubicsCube$onTouch(position));
 };
-var _elm_lang$elm_architecture_tutorial$RubicsCube$onTouchMoveAt = function (position) {
+var _elm_lang$elm_architecture_tutorial$RubicsCube$onTouchMove = function (position) {
 	return _elm_lang$elm_architecture_tutorial$MainMessage$DragAt(
 		_elm_lang$elm_architecture_tutorial$RubicsCube$onTouch(position));
 };
@@ -15636,13 +15636,25 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$view = function (model) {
 			_0: _elm_lang$elm_architecture_tutorial$RubicsCube$onMouseDown,
 			_1: {
 				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$style(
-					{
+				_0: _mpizenberg$elm_touch_events$SingleTouch$onStart(_elm_lang$elm_architecture_tutorial$RubicsCube$onTouchStart),
+				_1: {
+					ctor: '::',
+					_0: _mpizenberg$elm_touch_events$SingleTouch$onMove(_elm_lang$elm_architecture_tutorial$RubicsCube$onTouchMove),
+					_1: {
 						ctor: '::',
-						_0: A2(_elm_lang$elm_architecture_tutorial$RubicsCube_ops['=>'], 'height', '100%'),
-						_1: {ctor: '[]'}
-					}),
-				_1: {ctor: '[]'}
+						_0: _mpizenberg$elm_touch_events$SingleTouch$onEnd(_elm_lang$elm_architecture_tutorial$RubicsCube$onTouchEnd),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$style(
+								{
+									ctor: '::',
+									_0: A2(_elm_lang$elm_architecture_tutorial$RubicsCube_ops['=>'], 'height', '100%'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}
+				}
 			}
 		},
 		{

@@ -225,7 +225,7 @@ updateLastMoveByColor model face x y =
 view: Model -> Html.Html Msg
 view model =
   --Html.div [onMouseDown, style ["height" => "100%"] ]
-  Html.div [ onMouseDown, style ["height" => "100%"] ]
+  Html.div [ onMouseDown, SingleTouch.onStart onTouchStart, SingleTouch.onMove onTouchMove, SingleTouch.onEnd onTouchEnd, style ["height" => "100%"] ]
     [ Html.div [style ["height" => "100%", "display"=>"flex", "justify-content"=> "center", "align-items"=>"center"]]
           --[ WebGL.toHtml [width 800, height 800] (List.concat[(sceneSpinRow model), (sceneRest model)]) ]
           --[ WebGL.toHtml [onMouseDown, width 800, height 800, style ["height" => "100%"]] (List.concat[(sceneSpinRow model), (sceneRest model)]) ]
@@ -268,8 +268,8 @@ onTouchEnd : Touch.Coordinates -> Msg
 onTouchEnd position =
   DragEnd (onTouch position)
 
-onTouchMoveAt : Touch.Coordinates -> Msg
-onTouchMoveAt position =
+onTouchMove : Touch.Coordinates -> Msg
+onTouchMove position =
   DragAt (onTouch position)
 {-}
   let
