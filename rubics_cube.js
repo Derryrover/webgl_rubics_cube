@@ -7599,29 +7599,6 @@ var _elm_community$list_extra$List_Extra$init = function () {
 var _elm_community$list_extra$List_Extra$last = _elm_community$list_extra$List_Extra$foldl1(
 	_elm_lang$core$Basics$flip(_elm_lang$core$Basics$always));
 
-// added preserveDrawingBuffer: true at line 574 By Tom de Boer to read pixels
-/*
-commented out lines that contain: cache.buffers[entity.buffer.guid
-lines:
-449
-453
-
-var buffer; //= model.cache.buffers[entity.buffer.guid];
-
-      if (!buffer) {
-        buffer = doBindSetup(gl, entityType, entity.buffer);
-        //model.cache.buffers[entity.buffer.guid] = buffer;
-      }
-
-
-these lines cached the triangle buffers
-anyway these buffers are going to be recreated each time
-so there will be infinitively alot cached,
-causing a memory leak
-
-https://groups.google.com/forum/#!topic/elm-discuss/NzUX9AEulxg
-//*/
-
 // eslint-disable-next-line no-unused-vars, camelcase
 var _elm_community$webgl$Native_WebGL = function () {
 
@@ -7992,7 +7969,7 @@ var _elm_community$webgl$Native_WebGL = function () {
     LOG('Drawing');
 
     function drawEntity(entity) {
-      if (listLength(entity.buffer._0) === 0) {
+      if (entity.buffer._0.ctor === '[]') {
         return;
       }
 
@@ -8047,11 +8024,11 @@ var _elm_community$webgl$Native_WebGL = function () {
       setUniforms(setters, entity.uniforms);
 
       var entityType = getRenderInfo(gl, entity.buffer.ctor);
-      var buffer; // = model.cache.buffers[entity.buffer.guid];
+      var buffer;// = model.cache.buffers[entity.buffer.guid];
 
       if (!buffer) {
         buffer = doBindSetup(gl, entityType, entity.buffer);
-        // model.cache.buffers[entity.buffer.guid] = buffer;
+        //model.cache.buffers[entity.buffer.guid] = buffer;
       }
 
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer.indexBuffer);
@@ -8195,7 +8172,7 @@ var _elm_community$webgl$Native_WebGL = function () {
       stencil: false,
       antialias: false,
       premultipliedAlpha: false,
-	  preserveDrawingBuffer: true
+      preserveDrawingBuffer: true
     };
     var sceneSettings = [];
 
@@ -15533,6 +15510,115 @@ var _elm_lang$elm_architecture_tutorial$RotationDirectionFromDrag$calculateMove 
 		}
 	});
 
+var _mpizenberg$elm_touch_events$Private_Touch$stopOptions = {stopPropagation: true, preventDefault: true};
+var _mpizenberg$elm_touch_events$Private_Touch$toTuple = function (touch) {
+	return {ctor: '_Tuple2', _0: touch.identifier, _1: touch.coordinates};
+};
+var _mpizenberg$elm_touch_events$Private_Touch$Event = F3(
+	function (a, b, c) {
+		return {changedTouches: a, targetTouches: b, touches: c};
+	});
+var _mpizenberg$elm_touch_events$Private_Touch$Touch = F2(
+	function (a, b) {
+		return {identifier: a, coordinates: b};
+	});
+var _mpizenberg$elm_touch_events$Private_Touch$Coordinates = F2(
+	function (a, b) {
+		return {clientX: a, clientY: b};
+	});
+var _mpizenberg$elm_touch_events$Private_Touch$decode = A3(
+	_elm_lang$core$Json_Decode$map2,
+	_mpizenberg$elm_touch_events$Private_Touch$Touch,
+	A2(_elm_lang$core$Json_Decode$field, 'identifier', _elm_lang$core$Json_Decode$int),
+	A3(
+		_elm_lang$core$Json_Decode$map2,
+		_mpizenberg$elm_touch_events$Private_Touch$Coordinates,
+		A2(_elm_lang$core$Json_Decode$field, 'clientX', _elm_lang$core$Json_Decode$float),
+		A2(_elm_lang$core$Json_Decode$field, 'clientY', _elm_lang$core$Json_Decode$float)));
+
+var _mpizenberg$elm_touch_events$Touch$clientPos = function (coordinates) {
+	return {
+		ctor: '_Tuple2',
+		_0: function (_) {
+			return _.clientX;
+		}(coordinates),
+		_1: function (_) {
+			return _.clientY;
+		}(coordinates)
+	};
+};
+var _mpizenberg$elm_touch_events$Touch$touches = function (_) {
+	return _.touches;
+};
+var _mpizenberg$elm_touch_events$Touch$targetTouches = function (_) {
+	return _.targetTouches;
+};
+var _mpizenberg$elm_touch_events$Touch$changedTouches = function (_) {
+	return _.changedTouches;
+};
+
+var _mpizenberg$elm_touch_events$SingleTouch$decodeCoordinates = A2(
+	_elm_lang$core$Json_Decode$map,
+	function (_) {
+		return _.coordinates;
+	},
+	A2(
+		_elm_lang$core$Json_Decode$at,
+		{
+			ctor: '::',
+			_0: 'changedTouches',
+			_1: {
+				ctor: '::',
+				_0: '0',
+				_1: {ctor: '[]'}
+			}
+		},
+		_mpizenberg$elm_touch_events$Private_Touch$decode));
+var _mpizenberg$elm_touch_events$SingleTouch$on = F2(
+	function (event, tag) {
+		return A3(
+			_elm_lang$html$Html_Events$onWithOptions,
+			event,
+			_mpizenberg$elm_touch_events$Private_Touch$stopOptions,
+			A2(_elm_lang$core$Json_Decode$map, tag, _mpizenberg$elm_touch_events$SingleTouch$decodeCoordinates));
+	});
+var _mpizenberg$elm_touch_events$SingleTouch$onCancel = function (tag) {
+	return A2(_mpizenberg$elm_touch_events$SingleTouch$on, 'touchcancel', tag);
+};
+var _mpizenberg$elm_touch_events$SingleTouch$onEnd = function (tag) {
+	return A2(_mpizenberg$elm_touch_events$SingleTouch$on, 'touchend', tag);
+};
+var _mpizenberg$elm_touch_events$SingleTouch$onMove = function (tag) {
+	return A2(_mpizenberg$elm_touch_events$SingleTouch$on, 'touchmove', tag);
+};
+var _mpizenberg$elm_touch_events$SingleTouch$onStart = function (tag) {
+	return A2(_mpizenberg$elm_touch_events$SingleTouch$on, 'touchstart', tag);
+};
+
+var _elm_lang$elm_architecture_tutorial$RubicsCube$onTouch = function (coordinates) {
+	var _p0 = _mpizenberg$elm_touch_events$Touch$clientPos(coordinates);
+	var x = _p0._0;
+	var y = _p0._1;
+	var xInt = _elm_lang$core$Basics$round(x);
+	var yInt = _elm_lang$core$Basics$round(y);
+	return {x: xInt, y: yInt};
+};
+var _elm_lang$elm_architecture_tutorial$RubicsCube$onTouchCancel = function (position) {
+	return _elm_lang$elm_architecture_tutorial$MainMessage$DragEnd(
+		_elm_lang$elm_architecture_tutorial$RubicsCube$onTouch(position));
+};
+var _elm_lang$elm_architecture_tutorial$RubicsCube$onTouchStart = function (position) {
+	return _elm_lang$elm_architecture_tutorial$MainMessage$DragStart(
+		_elm_lang$elm_architecture_tutorial$RubicsCube$onTouch(position));
+};
+var _elm_lang$elm_architecture_tutorial$RubicsCube$onTouchEnd = function (position) {
+	return _elm_lang$elm_architecture_tutorial$MainMessage$DragEnd(
+		_elm_lang$elm_architecture_tutorial$RubicsCube$onTouch(position));
+};
+var _elm_lang$elm_architecture_tutorial$RubicsCube$onTouchMoveAt = function (position) {
+	return _elm_lang$elm_architecture_tutorial$MainMessage$DragAt(
+		_elm_lang$elm_architecture_tutorial$RubicsCube$onTouch(position));
+};
 var _elm_lang$elm_architecture_tutorial$RubicsCube$onMouseDown = A2(
 	_elm_lang$html$Html_Events$on,
 	'mousedown',
@@ -15685,13 +15771,13 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$updateLastMoveByColor = F4(
 			});
 	});
 var _elm_lang$elm_architecture_tutorial$RubicsCube$retriggerArrowUpDown = function (model) {
-	var _p0 = model.arrowUp;
-	if (_p0 === true) {
+	var _p1 = model.arrowUp;
+	if (_p1 === true) {
 		return _elm_lang$elm_architecture_tutorial$CommandToMessage$message(
 			_elm_lang$elm_architecture_tutorial$MainMessage$KeyMsg(38));
 	} else {
-		var _p1 = model.arrowDown;
-		if (_p1 === true) {
+		var _p2 = model.arrowDown;
+		if (_p2 === true) {
 			return _elm_lang$elm_architecture_tutorial$CommandToMessage$message(
 				_elm_lang$elm_architecture_tutorial$MainMessage$KeyMsg(40));
 		} else {
@@ -15700,12 +15786,12 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$retriggerArrowUpDown = functi
 	}
 };
 var _elm_lang$elm_architecture_tutorial$RubicsCube$retriggerArrowLeftRight = function (model) {
-	var _p2 = model.arrowLeft;
-	if (_p2 === true) {
+	var _p3 = model.arrowLeft;
+	if (_p3 === true) {
 		return _elm_lang$core$Platform_Cmd$none;
 	} else {
-		var _p3 = model.arrowRight;
-		if (_p3 === true) {
+		var _p4 = model.arrowRight;
+		if (_p4 === true) {
 			return _elm_lang$elm_architecture_tutorial$CommandToMessage$message(
 				_elm_lang$elm_architecture_tutorial$MainMessage$KeyMsg(39));
 		} else {
@@ -15714,12 +15800,12 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$retriggerArrowLeftRight = fun
 	}
 };
 var _elm_lang$elm_architecture_tutorial$RubicsCube$getKeyStateDirectionLeftRight = function (model) {
-	var _p4 = model.arrowLeft;
-	if (_p4 === true) {
+	var _p5 = model.arrowLeft;
+	if (_p5 === true) {
 		return 8.0e-2;
 	} else {
-		var _p5 = model.arrowRight;
-		if (_p5 === true) {
+		var _p6 = model.arrowRight;
+		if (_p6 === true) {
 			return -8.0e-2;
 		} else {
 			return 0.0;
@@ -15727,12 +15813,12 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$getKeyStateDirectionLeftRight
 	}
 };
 var _elm_lang$elm_architecture_tutorial$RubicsCube$getKeyStateDirectionUpDown = function (model) {
-	var _p6 = model.arrowUp;
-	if (_p6 === true) {
+	var _p7 = model.arrowUp;
+	if (_p7 === true) {
 		return 8.0e-2;
 	} else {
-		var _p7 = model.arrowDown;
-		if (_p7 === true) {
+		var _p8 = model.arrowDown;
+		if (_p8 === true) {
 			return -8.0e-2;
 		} else {
 			return 0.0;
@@ -15746,51 +15832,51 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$sendCoordinates = _elm_lang$c
 	});
 var _elm_lang$elm_architecture_tutorial$RubicsCube$update = F2(
 	function (msg, model) {
-		var _p8 = msg;
-		switch (_p8.ctor) {
+		var _p9 = msg;
+		switch (_p9.ctor) {
 			case 'DragStart':
-				var _p10 = _p8._0;
-				var _p9 = model.movingRow;
-				if (_p9 === false) {
+				var _p11 = _p9._0;
+				var _p10 = model.movingRow;
+				if (_p10 === false) {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								formerDragX: _elm_lang$core$Basics$toFloat(_p10.x),
-								formerDragY: _elm_lang$core$Basics$toFloat(_p10.y),
-								beginDragX: _elm_lang$core$Basics$toFloat(_p10.x),
-								beginDragY: _elm_lang$core$Basics$toFloat(_p10.y),
+								formerDragX: _elm_lang$core$Basics$toFloat(_p11.x),
+								formerDragY: _elm_lang$core$Basics$toFloat(_p11.y),
+								beginDragX: _elm_lang$core$Basics$toFloat(_p11.x),
+								beginDragY: _elm_lang$core$Basics$toFloat(_p11.y),
 								dragging: true
 							}),
 						_1: _elm_lang$elm_architecture_tutorial$RubicsCube$sendCoordinates(
 							A2(
 								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(_p10.x),
+								_elm_lang$core$Basics$toString(_p11.x),
 								A2(
 									_elm_lang$core$Basics_ops['++'],
 									',',
-									_elm_lang$core$Basics$toString(_p10.y))))
+									_elm_lang$core$Basics$toString(_p11.y))))
 					};
 				} else {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
 			case 'DragAt':
-				var _p15 = _p8._0;
-				var _p11 = model.dragging;
-				if (_p11 === true) {
-					var _p12 = model.colorPicked;
-					if (_p12.ctor === 'Just') {
-						var _p13 = model.movingRow;
-						if (_p13 === true) {
+				var _p16 = _p9._0;
+				var _p12 = model.dragging;
+				if (_p12 === true) {
+					var _p13 = model.colorPicked;
+					if (_p13.ctor === 'Just') {
+						var _p14 = model.movingRow;
+						if (_p14 === true) {
 							return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 						} else {
-							var _p14 = _elm_lang$core$Native_Utils.cmp(
+							var _p15 = _elm_lang$core$Native_Utils.cmp(
 								_elm_lang$core$Basics$abs(
-									model.beginDragX - _elm_lang$core$Basics$toFloat(_p15.x)) + _elm_lang$core$Basics$abs(
-									model.beginDragY - _elm_lang$core$Basics$toFloat(_p15.y)),
+									model.beginDragX - _elm_lang$core$Basics$toFloat(_p16.x)) + _elm_lang$core$Basics$abs(
+									model.beginDragY - _elm_lang$core$Basics$toFloat(_p16.y)),
 								80) > 0;
-							if (_p14 === false) {
+							if (_p15 === false) {
 								return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 							} else {
 								return {
@@ -15798,9 +15884,9 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$update = F2(
 									_0: A4(
 										_elm_lang$elm_architecture_tutorial$RubicsCube$updateLastMoveByColor,
 										model,
-										_p12._0,
-										model.beginDragY - _elm_lang$core$Basics$toFloat(_p15.y),
-										model.beginDragX - _elm_lang$core$Basics$toFloat(_p15.x)),
+										_p13._0,
+										model.beginDragY - _elm_lang$core$Basics$toFloat(_p16.y),
+										model.beginDragX - _elm_lang$core$Basics$toFloat(_p16.x)),
 									_1: _elm_lang$core$Platform_Cmd$none
 								};
 							}
@@ -15814,10 +15900,10 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$update = F2(
 									rotationMatrix: A3(
 										_elm_lang$elm_architecture_tutorial$CalculateViewFromDrag$calculateView,
 										model.rotationMatrix,
-										(model.formerDragY - _elm_lang$core$Basics$toFloat(_p15.y)) / 180,
-										(model.formerDragX - _elm_lang$core$Basics$toFloat(_p15.x)) / 180),
-									formerDragX: _elm_lang$core$Basics$toFloat(_p15.x),
-									formerDragY: _elm_lang$core$Basics$toFloat(_p15.y)
+										(model.formerDragY - _elm_lang$core$Basics$toFloat(_p16.y)) / 180,
+										(model.formerDragX - _elm_lang$core$Basics$toFloat(_p16.x)) / 180),
+									formerDragX: _elm_lang$core$Basics$toFloat(_p16.x),
+									formerDragY: _elm_lang$core$Basics$toFloat(_p16.y)
 								}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						};
@@ -15834,13 +15920,13 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'Frame':
-				return A2(_elm_lang$elm_architecture_tutorial$MainUpdateFrame$updateFrame, model, _p8._0);
+				return A2(_elm_lang$elm_architecture_tutorial$MainUpdateFrame$updateFrame, model, _p9._0);
 			case 'MoveRow':
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{lastMove: _p8._0, movingRow: true}),
+						{lastMove: _p9._0, movingRow: true}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'EndMove':
@@ -15864,13 +15950,13 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$update = F2(
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							colorPicked: _elm_lang$elm_architecture_tutorial$ColorPicker$getByColor(_p8._0)
+							colorPicked: _elm_lang$elm_architecture_tutorial$ColorPicker$getByColor(_p9._0)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'KeyMsg':
-				var _p16 = _p8._0;
-				switch (_p16) {
+				var _p17 = _p9._0;
+				switch (_p17) {
 					case 37:
 						return {
 							ctor: '_Tuple2',
@@ -15907,8 +15993,8 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$update = F2(
 						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
 			default:
-				var _p17 = _p8._0;
-				switch (_p17) {
+				var _p18 = _p9._0;
+				switch (_p18) {
 					case 37:
 						return {
 							ctor: '_Tuple2',
@@ -15948,8 +16034,8 @@ var _elm_lang$elm_architecture_tutorial$RubicsCube$update = F2(
 	});
 var _elm_lang$elm_architecture_tutorial$RubicsCube$listenForColors = _elm_lang$core$Native_Platform.incomingPort('listenForColors', _elm_lang$core$Json_Decode$string);
 var _elm_lang$elm_architecture_tutorial$RubicsCube$subscriptions = function (model) {
-	var _p18 = model.dragging;
-	if (_p18 === true) {
+	var _p19 = model.dragging;
+	if (_p19 === true) {
 		return _elm_lang$core$Platform_Sub$batch(
 			{
 				ctor: '::',

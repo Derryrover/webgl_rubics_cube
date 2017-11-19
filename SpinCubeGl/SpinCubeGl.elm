@@ -45,7 +45,3 @@ scenePicker model =
     triangles = WebGL.triangles vertexes
   in
     [ entity VertexShaderPicker.vertexShader FragmentShaderPicker.fragmentShader triangles (uniformsNoShade model.rotationMatrix ) ]
-
-
-
-

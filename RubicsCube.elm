@@ -9,6 +9,8 @@ import Html.Events exposing (on)
 import Html.Events exposing(onClick)
 import Json.Decode as Decode
 import Mouse exposing (Position)
+import Touch
+import SingleTouch
 
 import Keyboard
 import CommandToMessage
@@ -245,3 +247,35 @@ onMouseDown : Html.Attribute Msg
 onMouseDown =
   on "mousedown" (Decode.map DragStart Mouse.position)
 
+onTouch : Touch.Coordinates -> Mouse.Position
+onTouch coordinates =
+  let
+    (x, y) = Touch.clientPos coordinates
+    xInt = round x
+    yInt = round y
+  in
+    {x=xInt, y=yInt}
+
+onTouchCancel : Touch.Coordinates -> Msg
+onTouchCancel position =
+  DragEnd (onTouch position)
+
+onTouchStart : Touch.Coordinates -> Msg
+onTouchStart position =
+  DragStart (onTouch position)
+
+onTouchEnd : Touch.Coordinates -> Msg
+onTouchEnd position =
+  DragEnd (onTouch position)
+
+onTouchMoveAt : Touch.Coordinates -> Msg
+onTouchMoveAt position =
+  DragAt (onTouch position)
+{-}
+  let
+    (x, y) = Touch.clientPos position
+    xInt = round x
+    yInt = round y
+  in
+    --DragStart (Mouse.Position xInt yInt)
+    DragStart {x=xInt, y=yInt}-}
