@@ -1,0 +1,47 @@
+// install docker
+// only needed first time
+sudo apt-get update
+sudo apt-get install docker.io
+
+// build container
+// need everytime Dockerfile changes
+// name of docker file= elm_0.18
+// . means use Dockerfile in current folder
+sudo docker build -t elm_0.18 .
+
+// run docker
+//needed everytime docker container is no longer running
+// --name elm_0.18_c1 -> adds name to the container later used in docker exec
+// -v "$(pwd):/code" -> mounts current folder as interactive volume
+sudo docker run -t -i -d -v "$(pwd):/code" -w "/code" -e "HOME=/tmp" -u $UID:$GID -p 8000:8000 --name elm_0.18_c1 --rm elm_0.18
+
+// check if docker is still running
+// should list container id of docker
+sudo docker ps
+
+// go inside docker
+// inside docker elm commands can be run
+// elm_0.18_c1 is name of container as given in previous docker run command
+sudo docker exec -it elm_0.18_c1  /bin/bash
+
+// you have entered the docker
+// you can now run elm commands
+// elm --version should list 0.18
+elm --version
+elm-make RubicsCube.elm --output=rubics_cube.js
+
+// to go out of docker container
+CTRL + d
+
+// to stop container from running
+sudo docker stop elm_0.18_c1
+
+
+
+
+_________________________________________________________________________
+// if nothing works try building from source
+// build using docker because we need elm 0.18
+sudo docker run -it -v "$(pwd):/code" -w "/code" -e "HOME=/tmp" -u $UID:$GID -p 8000:8000 codesimple/elm:0.18 make RubicsCube.elm --output=rubics_cube.js
+
+

@@ -1,3 +1,20 @@
+This readme has 3 parts:
+
+1. run a simple build by executing command in file elm_make_as_js.bat
+This assumes you have elm 0.18 installed (if not go to step 2)
+
+2. This step runs elm build tools and package manager in docker
+This step is optional if step one was succesfull (if you have globally installed elm 0.18)
+To install the docker follow instructions in docker_readme
+
+3. The webgl library used is adapted slightly
+Execute the description below if
+- the colorpicker (when you drag on the cube to make a move) is not working
+- the webgl context crashes because of bufferoverflow
+
+
+
+
 Update
 elm-stuff\packages\elm-community\webgl\2.0.3\src\Native\WebGL.js
 
